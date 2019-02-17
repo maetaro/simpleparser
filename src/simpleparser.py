@@ -21,13 +21,17 @@ class Success(ParseResult):
     def __init__(self, tokens, position):
         super().__init__(True, tokens, position)
 
+    def result(self):
+        return self.tokens
+
+
 class Failure(ParseResult):
 
     def __init__(self, message, position):
         super().__init__(False, None, position, message)
 
     def result(self):
-        return [self.success, self.tokens, self.position, self.message]
+        return self.message
 
 
 def token(s):
@@ -35,9 +39,9 @@ def token(s):
     Example
     -------
     >>> token("foo")("foobar").result()
-    [True, ['foo'], 3]
+    ['foo']
     >>> token("bar")("foobar").result()
-    [False, None, 0, 'parse error at (0): unexpected foo expecting bar']
+    'parse error at (0): unexpected foo expecting bar'
     """
     length = len(s)
 
@@ -63,12 +67,12 @@ def regex(pattern):
     -------
     >>> parser = regex("hoge")
     >>> parser('hoge', 0).result()
-    [True, ['hoge'], 4]
+    ['hoge']
     >>> parser = regex("([1-9][0-9]*)")
     >>> parser('2014a', 0).result()
-    [True, ['2014'], 4]
+    ['2014']
     >>> parser('01', 0).result()
-    [False, None, 0, 'parse error at (0): unexpected 01 expecting ([1-9][0-9]*)']
+    'parse error at (0): unexpected 01 expecting ([1-9][0-9]*)'
     """
     def f(target, position):
         m = re.match(pattern, target[position:])
@@ -85,11 +89,11 @@ def many(parser):
     Example
     -------
     >>> many(token('hoge'))('hogehoge').result()
-    [True, ['hoge', 'hoge'], 8]
+    ['hoge', 'hoge']
     >>> many(token('hoge'))('', 0).result()
-    [True, [], 0]
+    []
     >>> many(token('foobar'))('foo', 0).result()
-    [True, [], 0]
+    []
     """
     def f(target, position=0):
         result = []
@@ -116,13 +120,13 @@ def choice(*args):
     -------
     >>> parse = many(choice(token('hoge'), token('fuga')))
     >>> parse('', 0).result()
-    [True, [], 0]
+    []
     >>> parse('hogehoge', 0).result()
-    [True, ['hoge', 'hoge'], 8]
+    ['hoge', 'hoge']
     >>> parse('fugahoge', 0).result()
-    [True, ['fuga', 'hoge'], 8]
+    ['fuga', 'hoge']
     >>> parse('fugafoo', 0).result()
-    [True, ['fuga'], 4]
+    ['fuga']
     """
     parsers = args
 
@@ -145,11 +149,11 @@ def seq(*args):
     -------
     >>> parse = seq(token('foo'), choice(token('bar'), token('baz')))
     >>> parse('foobar').result()
-    [True, ['foo', 'bar'], 6]
+    ['foo', 'bar']
     >>> parse('foobaz').result()
-    [True, ['foo', 'baz'], 6]
+    ['foo', 'baz']
     >>> parse('foo').result()
-    [False, None, 0, 'parse error at (3): unexpected  expecting bar\\nparse error at (3): unexpected  expecting baz']
+    'parse error at (3): unexpected  expecting bar\\nparse error at (3): unexpected  expecting baz'
     """
     parsers = args
 
@@ -179,9 +183,9 @@ def option(parser):
     -------
     >>> parser = option(token('hoge'))
     >>> parser('hoge', 0).result()
-    [True, ['hoge'], 4]
+    ['hoge']
     >>> parser('fuga', 0).result()
-    [True, None, 0]
+    []
     """
     def f(target, position):
         result = parser(target, position)
@@ -199,11 +203,11 @@ def lazy(callback):
     -------
     >>> parse = option(seq(token('hoge'), lazy(lambda: parse)))
     >>> parse('hoge', 0).result()
-    [True, ['hoge'], 4]
+    ['hoge']
     >>> parse('hogehoge', 0).result()
-    [True, ['hoge', 'hoge'], 8]
+    ['hoge', 'hoge']
     >>> parse('hogehogehoge', 0).result()
-    [True, ['hoge', 'hoge', 'hoge'], 12]
+    ['hoge', 'hoge', 'hoge']
     """
     def f(target, position):
         parse = callback()

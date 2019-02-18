@@ -223,6 +223,8 @@ def map(parser, selector):
         result.tokens = selector(result.tokens)
         return result
 
+    return f
+
 
 if __name__ == "__main__":
     import doctest

@@ -216,7 +216,7 @@ def lazy(callback):
 
 
 def map(parser, selector):
-    def(target, position):
+    def f(target, position):
         result = parser(target, position)
         if not result.success:
             return result

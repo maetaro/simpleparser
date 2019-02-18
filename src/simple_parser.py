@@ -84,6 +84,30 @@ def regex(pattern):
     return f
 
 
+def noneOf(s):
+    """
+    As the dual of oneOf, noneOf cs succeeds if the current character not in the supplied list of characters cs. Returns the parsed character.
+
+    Example
+    -------
+    >>> noneOf("abcdefg")("hello", 0).result()
+    ['h']
+    """
+    def f(target, position=0):
+        exists = False
+        targetChar = target[position:position + 1]
+        for c in s:
+            if targetChar == c:
+                exists = True
+                break
+        if not exists:
+            return Success([targetChar], position + 1)
+        else:
+            return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)
+
+    return f
+
+
 def many(parser):
     """
     Example
@@ -192,7 +216,7 @@ def option(parser):
         if result.success:
             return result
         else:
-            return Success(None, position)
+            return Success([], position)
 
     return f
 
@@ -216,6 +240,12 @@ def lazy(callback):
 
 
 def map(parser, selector):
+    """
+    Example
+    -------
+    >>> map(token("foo"), lambda x: [",".join(x) + " aaa"])("foo", 0).result()
+    ['foo aaa']
+    """
     def f(target, position):
         result = parser(target, position)
         if not result.success:

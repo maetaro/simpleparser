@@ -215,6 +215,15 @@ def lazy(callback):
     return f
 
 
+def map(parser, selector):
+    def(target, position):
+        result = parser(target, position)
+        if not result.success:
+            return result
+        result.tokens = selector(result.tokens)
+        return result
+
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()

@@ -3,6 +3,32 @@
 import re
 
 
+class Maybe:
+    def __init__(self, a):
+        self.value = a
+        return
+
+    def bind(self, a_to_m_b):
+        if self is Nothing:
+            return Nothing
+        else:
+            return a_to_m_b(self.value)
+
+    def __or__(self, a_to_m_b):
+        return self.bind(a_to_m_b)
+
+
+class Just(Maybe):
+    def __repr__(self):
+        return 'Just(%r)' % self.value
+
+
+class Nothing(Maybe):
+    def __repr__(self):
+        return 'Nothing'
+Nothing = Nothing(Nothing)
+
+
 class ParseResult:
     """Parsed Result class"""
 
@@ -106,6 +132,21 @@ def noneOf(s):
             return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)
 
     return f
+
+
+def sepBy(parser, sep):
+    """
+    """
+    def f(target, position=0):
+        return many(seq(parser(target, position), token(sep)))
+
+    return f
+
+
+def char(s):
+    """
+    """
+    return token(s)
 
 
 def many(parser):

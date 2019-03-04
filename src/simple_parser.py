@@ -3,32 +3,6 @@
 import re
 
 
-class Maybe:
-    def __init__(self, a):
-        self.value = a
-        return
-
-    def bind(self, a_to_m_b):
-        if self is Nothing:
-            return Nothing
-        else:
-            return a_to_m_b(self.value)
-
-    def __or__(self, a_to_m_b):
-        return self.bind(a_to_m_b)
-
-
-class Just(Maybe):
-    def __repr__(self):
-        return 'Just(%r)' % self.value
-
-
-class Nothing(Maybe):
-    def __repr__(self):
-        return 'Nothing'
-Nothing = Nothing(Nothing)
-
-
 class ParseResult:
     """Parsed Result class"""
 
@@ -74,8 +48,7 @@ def token(s):
     def f(target, position=0):
         if target[position:position + length] == s:
             return Success([s], position + length)
-        else:
-            return Failure("parse error at (" + str(position) + "): unexpected " + target[position:position + length] + " expecting " + s, position)
+        return Failure("parse error at (" + str(position) + "): unexpected " + target[position:position + length] + " expecting " + s, position)
 
     return f
 
@@ -104,8 +77,7 @@ def regex(pattern):
         m = re.match(pattern, target[position:])
         if m:
             return Success([m.group()], position + len(m.group()))
-        else:
-            return Failure("parse error at (" + str(position) + "): unexpected " + target[position:] + " expecting " + pattern, position)
+        return Failure("parse error at (" + str(position) + "): unexpected " + target[position:] + " expecting " + pattern, position)
 
     return f
 
@@ -128,8 +100,7 @@ def noneOf(s):
                 break
         if not exists:
             return Success([targetChar], position + 1)
-        else:
-            return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)
+        return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)
 
     return f
 
@@ -282,8 +253,7 @@ def option(parser):
         result = parser(target, position)
         if result.success:
             return result
-        else:
-            return Success([], position)
+        return Success([], position)
 
     return f
 

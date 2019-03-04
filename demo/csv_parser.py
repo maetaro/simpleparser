@@ -31,14 +31,14 @@ class csv_parser:
     def parse(self, s):
 
         dquote = p.token("\"")
-        quotedChar = p.choice(p.noneOf(dquote), p.option("\"\""))
-        quotedCell = p.seq(p.token("("), quotedChar, p.token(")"))
+        #quotedChar = p.choice(p.noneOf(dquote), p.option("\"\""))
+        #quotedCell = p.seq(p.token("("), quotedChar, p.token(")"))
         cell = p.choice(quotedCell, p.many(p.noneOf(",\n\r")))
-        line = p.sepBy(cell, (p.char(',')))
-        eol = p.choice(p.token("\n\r"), p.token("\r\n"), p.token("\n"), p.token("\r"))
+        line = p.seq(cell, p.option(p.char(',')))
+        #eol = p.choice(p.token("\n\r"), p.token("\r\n"), p.token("\n"), p.token("\r"))
 
         #parser = p.endBy(line, eol)
-        parser = p.sepBy(line, eol)
+        parser = line # p.sepBy(line, eol)
 
         #parseCSV :: String -> Either ParseError [[String]]
         #parseCSV input = parse csvFile "(unknown)" input

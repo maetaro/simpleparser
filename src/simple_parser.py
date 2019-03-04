@@ -134,19 +134,45 @@ def noneOf(s):
     return f
 
 
-def sepBy(parser, sep):
-    """
-    """
-    def f(target, position=0):
-        return many(seq(parser(target, position), token(sep)))
-
-    return f
-
-
 def char(s):
     """
     """
     return token(s)
+
+
+def sepBy(parser, sep):
+    """sepBy p sep parses zero or more occurrences of p, separated by sep. Returns a list of values returned by p.
+    Example
+    -------
+    >>> sepBy(regex('\w*'), token(','))('hoge,hoge').result()
+    ['hoge', ',', 'hoge']
+    """
+    def f(target, position=0):
+        result = []
+        pos = position
+
+        while True:
+            parsed = parser(target, pos)
+            if not parsed.success:
+                break
+            if type(parsed.tokens) is list:
+                result.extend(parsed.tokens)
+            else:
+                result.append(parsed.tokens)
+            pos = parsed.position
+
+            parsed = sep(target, pos)
+            if not parsed.success:
+                break
+            if type(parsed.tokens) is list:
+                result.extend(parsed.tokens)
+            else:
+                result.append(parsed.tokens)
+            pos = parsed.position
+
+        return Success(result, pos)
+
+    return f
 
 
 def many(parser):

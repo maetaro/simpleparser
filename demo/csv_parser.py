@@ -14,18 +14,18 @@ class csv_parser:
 
     Example
     -------
-    >>> parseCSV = csv_parser()
-    >>> parseCSV.parse("hi")
+    >>> p = csv_parser()
+    >>> p.parse("hi")
     "Left \"(unknown)\" (line 1, column 3):"
     "unexpected end of input"
     "expecting \",\" or \"\\n""
-    >>> parseCSV.parse("hi\\n")
+    >>> p.parse("hi\\n")
     [["hi"]]
-    >>> parseCSV.parse("line1\\nline2\\nline3\\n")
+    >>> p.parse("line1\\nline2\\nline3\\n")
     [["line1"],["line2"],["line3"]]
-    >>> parseCSV.parse("cell1,cell2,cell3\\n")
+    >>> p.parse("cell1,cell2,cell3\\n")
     [["cell1","cell2","cell3"]]
-    >>> parseCSV.parse("l1c1,l1c2\\nl2c1,l2c2\\n")
+    >>> p.parse("l1c1,l1c2\\nl2c1,l2c2\\n")
     [["l1c1","l1c2"],["l2c1","l2c2"]]
     '''
     def parse(self, s):

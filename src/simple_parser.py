@@ -111,6 +111,46 @@ def char(s):
     return token(s)
 
 
+def endBy(parser, sep):
+    """endBy p sep parses zero or more occurrences of p, separated and ended by sep. Returns a list of values returned by p.
+    Example
+    -------
+    >>> endBy(regex('\w*'), token(','))('').result()
+    ['']
+    >>> endBy(regex('\w*'), token(','))('hoge,hoge').result()
+    ['hoge', 'hoge']
+    >>> endBy(regex('\w*'), token(','))('hoge,hoge,').result()
+    ['hoge', 'hoge', '']
+    >>> endBy(regex('\w*'), token(','))('hoge,hoge,-').result()
+    'parse error.'
+    """
+    def f(target, position=0):
+        result = []
+        pos = position
+
+        while True:
+            parsed = parser(target, pos)
+            if not parsed.success:
+                break
+            if type(parsed.tokens) is list:
+                result.extend(parsed.tokens)
+            else:
+                result.append(parsed.tokens)
+            pos = parsed.position
+
+            parsed = sep(target, pos)
+            if not parsed.success:
+                break
+            pos = parsed.position
+
+        if pos != len(target):
+            return Failure("parse error.", pos)
+
+        return Success(result, pos)
+
+    return f
+
+
 def sepBy(parser, sep):
     """sepBy(parser, sep) parses zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
     Example

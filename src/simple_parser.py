@@ -112,7 +112,7 @@ def char(s):
 
 
 def sepBy(parser, sep):
-    """sepBy p sep parses zero or more occurrences of p, separated by sep. Returns a list of values returned by p.
+    """sepBy(parser, sep) parses zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
     Example
     -------
     >>> sepBy(regex('\w*'), token(','))('hoge,hoge').result()

@@ -116,7 +116,7 @@ def sepBy(parser, sep):
     Example
     -------
     >>> sepBy(regex('\w*'), token(','))('hoge,hoge').result()
-    ['hoge', ',', 'hoge']
+    ['hoge', 'hoge']
     """
     def f(target, position=0):
         result = []
@@ -135,10 +135,6 @@ def sepBy(parser, sep):
             parsed = sep(target, pos)
             if not parsed.success:
                 break
-            if type(parsed.tokens) is list:
-                result.extend(parsed.tokens)
-            else:
-                result.append(parsed.tokens)
             pos = parsed.position
 
         return Success(result, pos)

@@ -56,6 +56,7 @@ class Parser:
         """
         return choice(self, other)
 
+
 def token(s):
     """
     Example

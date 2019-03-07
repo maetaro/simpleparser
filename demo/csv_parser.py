@@ -39,8 +39,8 @@ class csv_parser:
             return [x]
 
         dquote = p.token("\"")
-        cell = p.map(dquote + p.regex("\w*") + dquote, lambda x: "".join(x))
-        line = p.map(p.sepBy(cell, p.char(',')), line_selector)
+        cell = (dquote + p.regex("\w*") + dquote).map(lambda x: "".join(x))
+        line = p.sepBy(cell, p.char(',')).map(line_selector)
         eol = p.token("\n\r") | p.token("\r\n") | p.token("\n") | p.token("\r")
 
         parser = p.endBy(line, eol)

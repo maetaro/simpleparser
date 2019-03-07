@@ -34,13 +34,24 @@ class Failure(ParseResult):
         return self.message
 
 
+class Parser:
+    """a parser class.
+    """
+    def __init__(self, f):
+        self.__f = f
+
+    @property
+    def exec(self):
+        return self.__f
+
+
 def token(s):
     """
     Example
     -------
-    >>> token("foo")("foobar").result()
+    >>> token("foo").exec("foobar").result()
     ['foo']
-    >>> token("bar")("foobar").result()
+    >>> token("bar").exec("foobar").result()
     'parse error at (0): unexpected foo expecting bar'
     """
     length = len(s)
@@ -50,7 +61,7 @@ def token(s):
             return Success([s], position + length)
         return Failure("parse error at (" + str(position) + "): unexpected " + target[position:position + length] + " expecting " + s, position)
 
-    return f
+    return Parser(f)
 
 
 def regex(pattern):
@@ -65,12 +76,12 @@ def regex(pattern):
     Example
     -------
     >>> parser = regex("hoge")
-    >>> parser('hoge', 0).result()
+    >>> parser.exec('hoge', 0).result()
     ['hoge']
     >>> parser = regex("([1-9][0-9]*)")
-    >>> parser('2014a', 0).result()
+    >>> parser.exec('2014a', 0).result()
     ['2014']
-    >>> parser('01', 0).result()
+    >>> parser.exec('01', 0).result()
     'parse error at (0): unexpected 01 expecting ([1-9][0-9]*)'
     """
     def f(target, position):
@@ -79,7 +90,7 @@ def regex(pattern):
             return Success([m.group()], position + len(m.group()))
         return Failure("parse error at (" + str(position) + "): unexpected " + target[position:] + " expecting " + pattern, position)
 
-    return f
+    return Parser(f)
 
 
 def noneOf(s):
@@ -88,7 +99,7 @@ def noneOf(s):
 
     Example
     -------
-    >>> noneOf("abcdefg")("hello", 0).result()
+    >>> noneOf("abcdefg").exec("hello", 0).result()
     ['h']
     """
     def f(target, position=0):
@@ -102,7 +113,7 @@ def noneOf(s):
             return Success([targetChar], position + 1)
         return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)
 
-    return f
+    return Parser(f)
 
 
 def char(s):
@@ -115,13 +126,13 @@ def endBy(parser, sep):
     """endBy p sep parses zero or more occurrences of p, separated and ended by sep. Returns a list of values returned by p.
     Example
     -------
-    >>> endBy(regex('\w*'), token(','))('').result()
+    >>> endBy(regex('\w*'), token(',')).exec('').result()
     ['']
-    >>> endBy(regex('\w*'), token(','))('hoge,hoge').result()
+    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge').result()
     ['hoge', 'hoge']
-    >>> endBy(regex('\w*'), token(','))('hoge,hoge,').result()
+    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,').result()
     ['hoge', 'hoge', '']
-    >>> endBy(regex('\w*'), token(','))('hoge,hoge,-').result()
+    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,-').result()
     'parse error.'
     """
     def f(target, position=0):
@@ -129,7 +140,7 @@ def endBy(parser, sep):
         pos = position
 
         while True:
-            parsed = parser(target, pos)
+            parsed = parser.exec(target, pos)
             if not parsed.success:
                 break
             if type(parsed.tokens) is list:
@@ -138,7 +149,7 @@ def endBy(parser, sep):
                 result.append(parsed.tokens)
             pos = parsed.position
 
-            parsed = sep(target, pos)
+            parsed = sep.exec(target, pos)
             if not parsed.success:
                 break
             pos = parsed.position
@@ -148,14 +159,14 @@ def endBy(parser, sep):
 
         return Success(result, pos)
 
-    return f
+    return Parser(f)
 
 
 def sepBy(parser, sep):
     """sepBy(parser, sep) parses zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
     Example
     -------
-    >>> sepBy(regex('\w*'), token(','))('hoge,hoge').result()
+    >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge').result()
     ['hoge', 'hoge']
     """
     def f(target, position=0):
@@ -163,7 +174,7 @@ def sepBy(parser, sep):
         pos = position
 
         while True:
-            parsed = parser(target, pos)
+            parsed = parser.exec(target, pos)
             if not parsed.success:
                 break
             if type(parsed.tokens) is list:
@@ -172,25 +183,25 @@ def sepBy(parser, sep):
                 result.append(parsed.tokens)
             pos = parsed.position
 
-            parsed = sep(target, pos)
+            parsed = sep.exec(target, pos)
             if not parsed.success:
                 break
             pos = parsed.position
 
         return Success(result, pos)
 
-    return f
+    return Parser(f)
 
 
 def many(parser):
     """
     Example
     -------
-    >>> many(token('hoge'))('hogehoge').result()
+    >>> many(token('hoge')).exec('hogehoge').result()
     ['hoge', 'hoge']
-    >>> many(token('hoge'))('', 0).result()
+    >>> many(token('hoge')).exec('', 0).result()
     []
-    >>> many(token('foobar'))('foo', 0).result()
+    >>> many(token('foobar')).exec('foo', 0).result()
     []
     """
     def f(target, position=0):
@@ -198,7 +209,7 @@ def many(parser):
         pos = position
 
         while True:
-            parsed = parser(target, pos)
+            parsed = parser.exec(target, pos)
             if not parsed.success:
                 break
             if type(parsed.tokens) is list:
@@ -209,7 +220,7 @@ def many(parser):
 
         return Success(result, pos)
 
-    return f
+    return Parser(f)
 
 
 def choice(*args):
@@ -217,13 +228,13 @@ def choice(*args):
     Example
     -------
     >>> parse = many(choice(token('hoge'), token('fuga')))
-    >>> parse('', 0).result()
+    >>> parse.exec('', 0).result()
     []
-    >>> parse('hogehoge', 0).result()
+    >>> parse.exec('hogehoge', 0).result()
     ['hoge', 'hoge']
-    >>> parse('fugahoge', 0).result()
+    >>> parse.exec('fugahoge', 0).result()
     ['fuga', 'hoge']
-    >>> parse('fugafoo', 0).result()
+    >>> parse.exec('fugafoo', 0).result()
     ['fuga']
     """
     parsers = args
@@ -231,14 +242,14 @@ def choice(*args):
     def f(target, position):
         messages = []
         for parser in parsers:
-            parsed = parser(target, position)
+            parsed = parser.exec(target, position)
             if parsed.success:
                 return parsed
             messages.append(parsed.message)
 
         return Failure("\n".join(messages), position)
 
-    return f
+    return Parser(f)
 
 
 def seq(*args):
@@ -246,11 +257,11 @@ def seq(*args):
     Example
     -------
     >>> parse = seq(token('foo'), choice(token('bar'), token('baz')))
-    >>> parse('foobar').result()
+    >>> parse.exec('foobar').result()
     ['foo', 'bar']
-    >>> parse('foobaz').result()
+    >>> parse.exec('foobaz').result()
     ['foo', 'baz']
-    >>> parse('foo').result()
+    >>> parse.exec('foo').result()
     'parse error at (3): unexpected  expecting bar\\nparse error at (3): unexpected  expecting baz'
     """
     parsers = args
@@ -259,7 +270,7 @@ def seq(*args):
         result = []
         pos_org = position
         for parser in parsers:
-            parsed = parser(target, position)
+            parsed = parser.exec(target, position)
             if not parsed.success:
                 return Failure(parsed.message, pos_org)
             if parsed.tokens is None:
@@ -272,7 +283,7 @@ def seq(*args):
 
         return Success(result, position)
 
-    return f
+    return Parser(f)
 
 
 def option(parser):
@@ -280,18 +291,18 @@ def option(parser):
     Example
     -------
     >>> parser = option(token('hoge'))
-    >>> parser('hoge', 0).result()
+    >>> parser.exec('hoge', 0).result()
     ['hoge']
-    >>> parser('fuga', 0).result()
+    >>> parser.exec('fuga', 0).result()
     []
     """
     def f(target, position):
-        result = parser(target, position)
+        result = parser.exec(target, position)
         if result.success:
             return result
         return Success([], position)
 
-    return f
+    return Parser(f)
 
 
 def lazy(callback):
@@ -299,34 +310,35 @@ def lazy(callback):
     Example
     -------
     >>> parse = option(seq(token('hoge'), lazy(lambda: parse)))
-    >>> parse('hoge', 0).result()
+    >>> parse.exec('hoge', 0).result()
     ['hoge']
-    >>> parse('hogehoge', 0).result()
+    >>> parse.exec('hogehoge', 0).result()
     ['hoge', 'hoge']
-    >>> parse('hogehogehoge', 0).result()
+    >>> parse.exec('hogehogehoge', 0).result()
     ['hoge', 'hoge', 'hoge']
     """
     def f(target, position):
         parse = callback()
-        return parse(target, position)
-    return f
+        return parse.exec(target, position)
+
+    return Parser(f)
 
 
 def map(parser, selector):
     """
     Example
     -------
-    >>> map(token("foo"), lambda x: [",".join(x) + " aaa"])("foo", 0).result()
+    >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0).result()
     ['foo aaa']
     """
     def f(target, position):
-        result = parser(target, position)
+        result = parser.exec(target, position)
         if not result.success:
             return result
         result.tokens = selector(result.tokens)
         return result
 
-    return f
+    return Parser(f)
 
 
 if __name__ == "__main__":

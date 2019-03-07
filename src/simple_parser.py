@@ -44,6 +44,14 @@ class Parser:
     def exec(self):
         return self.__f
 
+    def __or__(self, other):
+        """
+        >>> foo = token("foo")
+        >>> bar = token("bar")
+        >>> p = foo | bar
+        >>> p.exec("foo").result()
+        """
+        return choice(self, other)
 
 def token(s):
     """
@@ -239,7 +247,7 @@ def choice(*args):
     """
     parsers = args
 
-    def f(target, position):
+    def f(target, position=0):
         messages = []
         for parser in parsers:
             parsed = parser.exec(target, position)

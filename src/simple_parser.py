@@ -44,6 +44,9 @@ class Parser:
     def exec(self):
         return self.__f
 
+    def __add__(self, other):
+        return seq(self, other)
+
     def __or__(self, other):
         """
         >>> foo = token("foo")

@@ -31,7 +31,7 @@ class csv_parser:
     def parse(self, s):
 
         dquote = p.token("\"")
-        cell = p.map(p.seq(dquote, p.regex("\w*"), dquote), lambda x: "".join(x))
+        cell = p.map(dquote + p.regex("\w*") + dquote, lambda x: "".join(x))
         line = p.map(p.sepBy(cell, p.char(',')), lambda x: [x])
         newLine = (p.token("\n\r") | p.token("\r\n") | p.token("\n") | p.token("\r"))
         lines = p.sepBy(cell, newLine)

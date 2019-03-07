@@ -30,15 +30,20 @@ class csv_parser:
     '''
     def parse(self, s):
 
+        def line_selector(x):
+            print(x)
+            if len(x) == 0:
+                return None
+            if x is None:
+                return x
+            return [x]
+
         dquote = p.token("\"")
         cell = p.map(dquote + p.regex("\w*") + dquote, lambda x: "".join(x))
-        line = p.map(p.sepBy(cell, p.char(',')), lambda x: [x])
-        newLine = (p.token("\n\r") | p.token("\r\n") | p.token("\n") | p.token("\r"))
-        lines = p.sepBy(cell, newLine)
-        eol = p.choice(p.token("\n\r"), p.token("\r\n"), p.token("\n"), p.token("\r"))
+        line = p.map(p.sepBy(cell, p.char(',')), line_selector)
+        eol = p.token("\n\r") | p.token("\r\n") | p.token("\n") | p.token("\r")
 
         parser = p.endBy(line, eol)
-        #parser = line # p.sepBy(line, eol)
 
         #parseCSV :: String -> Either ParseError [[String]]
         #parseCSV input = parse csvFile "(unknown)" input

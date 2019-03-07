@@ -53,8 +53,30 @@ class Parser:
         >>> bar = token("bar")
         >>> p = foo | bar
         >>> p.exec("foo").result()
+        ['foo']
         """
         return choice(self, other)
+
+    def map(self, selector):
+        """
+        Example
+        -------
+        >>> cell = (token("foo") | token("bar")).map(lambda x: ["".join(x) + "aaa"])
+        >>> cell.exec("foooo").result()
+        ['fooaaa']
+        >>> cell.exec("barrr").result()
+        ['baraaa']
+        >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0).result()
+        ['foo aaa']
+        """
+        def f(target, position=0):
+            result = self.exec(target, position)
+            if not result.success:
+                return result
+            result.tokens = selector(result.tokens)
+            return result
+
+        return Parser(f)
 
 
 def token(s):

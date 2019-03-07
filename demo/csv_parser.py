@@ -33,7 +33,7 @@ class csv_parser:
         dquote = p.token("\"")
         cell = p.map(p.seq(dquote, p.regex("\w*"), dquote), lambda x: "".join(x))
         line = p.map(p.sepBy(cell, p.char(',')), lambda x: [x])
-        newLine = p.choice(p.token("\n\r"), p.token("\r\n"), p.token("\n"), p.token("\r"))
+        newLine = (p.token("\n\r") | p.token("\r\n") | p.token("\n") | p.token("\r"))
         lines = p.sepBy(cell, newLine)
         eol = p.choice(p.token("\n\r"), p.token("\r\n"), p.token("\n"), p.token("\r"))
 
@@ -50,7 +50,7 @@ class csv_parser:
         #                         print e
         #            Right r -> mapM_ print r
 
-        return parser(s, 0)
+        return parser.exec(s, 0)
 
 
 if __name__ == "__main__":

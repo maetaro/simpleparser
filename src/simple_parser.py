@@ -39,6 +39,10 @@ class Parser:
     """
     def __init__(self, f):
         self.__f = f
+        return
+
+    def bind(self, f):
+        return f(self.f)
 
     @property
     def exec(self):

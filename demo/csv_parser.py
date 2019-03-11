@@ -8,13 +8,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..\src'))
 import simple_parser as p
 
 
-class csv_parser:
+def parseCsv(s):
     '''
     http://book.realworldhaskell.org/read/using-parsec.html
 
     Example
     -------
-    >>> p = csv_parser()
+    >>> p = parseCsv
     >>> p.parse("hi").result()
     "Left \"(unknown)\" (line 1, column 3):"
     "unexpected end of input"

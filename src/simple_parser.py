@@ -46,6 +46,17 @@ class Parser:
         return self.__f
 
     def __add__(self, other):
+        """
+        Example
+        -------
+        >>> parse = token('foo') + (token('bar') | token('baz'))
+        >>> parse.exec('foobar').result()
+        ['foo', 'bar']
+        >>> parse.exec('foobaz').result()
+        ['foo', 'baz']
+        >>> parse.exec('foo').result()
+        'parse error at (3): unexpected  expecting bar\\nparse error at (3): unexpected  expecting baz'
+        """
         return seq(self, other)
 
     def __or__(self, other):

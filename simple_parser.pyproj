@@ -20,6 +20,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="demo\csv_parser.py" />
+    <Compile Include="demo\json_parser.py" />
     <Compile Include="demo\scheme_parser.py" />
     <Compile Include="src\simple_parser.py" />
   </ItemGroup>

@@ -22,7 +22,7 @@ def parseCsv(s):
     >>> p('"hi"\\n').result()
     [['"hi"']]
     >>> p('"line1"\\n"line2"\\n"line3"\\n').result()
-    [['"line1"'],['"line2"'],['"line3"']]
+    [['"line1"'], ['"line2"'], ['"line3"']]
     >>> p('"cell1","cell2","cell3"\\n').result()
     [['"cell1"', '"cell2"', '"cell3"']]
     >>> p('"l1c1","l1c2"\\n"l2c1","l2c2"\\n').result()
@@ -33,9 +33,9 @@ def parseCsv(s):
 
     def line_selector(x):
         if len(x) == 0:
-            return None
+            return []
         if x is None:
-            return x
+            return []
         return [x]
 
     dquote = p.token("\"")

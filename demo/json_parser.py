@@ -3,7 +3,7 @@
 import os
 import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..\src'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 
 import simple_parser as p
 
@@ -23,10 +23,10 @@ class json_parser:
     '''
     def parse(self, s):
 
-        propName = p.regex("\w*")
+        propName = p.regex("\w+")
         colon = p.token(":")
         p_str = (p.token('"') + p.regex("\w*") + p.token('"')) | (p.token("'") + p.regex("\w*") + p.token("'"))
-        num = p.regex("\d*").map(lambda x: int(float("".join(x))) if "".join(x) != "" else x)
+        num = p.regex("\d+").map(lambda x: int(float("".join(x))) if "".join(x) != "" else x)
         ary = p.token("[") + p.token("]")
 
         parser = p.token("{") + p.sepBy(propName + colon + (num | p_str), p.token(",")) + p.token("}")

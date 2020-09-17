@@ -18,14 +18,16 @@ class json_parser:
     >>> p.parse("{p1:1}").result()
     ['{', 'p1', ':', 1, '}']
     >>> p.parse("{p2:'a'}").result()
-    ['{', 'p2', ':', 'a', '}']
+    ['{', 'p2', ':', "'a'", '}']
     >>> p.parse("{p1:1,p2:'a',p3:[]}").result()
+    ['{', 'p1', ':', 1, 'p2', ':', "'a'", 'p3', ':', '[', ']', '}']
     '''
     def parse(self, s):
-
         propName = p.regex("\w+")
         colon = p.token(":")
-        p_str = (p.token('"') + p.regex("\w*") + p.token('"')) | (p.token("'") + p.regex("\w*") + p.token("'"))
+        sq = p.token("'")
+        dq = p.token('"')
+        p_str = ((dq + p.regex("\w*") + dq) | (sq + p.regex("\w*") + sq)).map(lambda x: "".join(x))
         num = p.regex("\d+").map(lambda x: int(float("".join(x))) if "".join(x) != "" else x)
         ary = p.token("[") + p.token("]")
 

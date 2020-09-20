@@ -11,7 +11,7 @@ import simple_parser as p
 def parseCsv(s):
     '''
     http://book.realworldhaskell.org/read/using-parsec.html
-    
+
     Example
     -------
     >>> p = parseCsv

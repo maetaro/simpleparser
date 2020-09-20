@@ -113,12 +113,11 @@ def token(s):
 def regex(pattern):
     """
     regex function returns a function that parses the beginning of the received string with the regular expression pattern.
-    
+
     Parameters
     ----------
     pattern: str
         a regular expression string.
-    
     Example
     -------
     >>> parser = regex("hoge")

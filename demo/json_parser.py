@@ -15,8 +15,14 @@ class json_parser:
     >>> p = json_parser()
     >>> p.parse("{}").result()
     ['{', '}']
-    >>> p.parse("{p1:1}").result()
-    ['{', 'p1', ':', 1, '}']
+    >>> p.parse("{p1:1,p2:2}").result()
+    ['{', 'p1', ':', 1, 'p2', ':', 2, '}']
+    >>> p.parse("{p1:1,p2:{p1:1,p2:2}}").result()
+    ['{', 'p1', ':', 1, 'p2', ':', '{', 'p1', ':', 1, 'p2', ':', 2, '}', '}']
+    >>> p.parse("[[1,2,3],[2],[3]]").result()
+    ['[', '[', 1, 2, 3, ']', '[', 2, ']', '[', 3, ']', ']']
+    >>> p.parse("[1,2,3]").result()
+    ['[', 1, 2, 3, ']']
     >>> p.parse("{p2:'a'}").result()
     ['{', 'p2', ':', "'a'", '}']
     >>> p.parse("{p1:1,p2:'a',p3:[]}").result()
@@ -29,12 +35,14 @@ class json_parser:
         dq = p.token('"')
         p_str = ((dq + p.regex("\w*") + dq) | (sq + p.regex("\w*") + sq)).map(lambda x: "".join(x))
         num = p.regex("\d+").map(lambda x: int(float("".join(x))) if "".join(x) != "" else x)
-        ary = p.token("[") + p.token("]")
+        p_multi = num | p_str | p.lazy(lambda: obj) | p.lazy(lambda: ary)
+        ary = p.token("[") + p.option(p.sepBy(p_multi, p.token(","))) + p.token("]")
+        obj = p.token("{") + p.option(p.sepBy(propName + colon + p_multi, p.token(","))) + p.token("}")
 
-        parser = p.token("{") + p.sepBy(propName + colon + (num | p_str), p.token(",")) + p.token("}")
-
-        return parser.exec(s, 0)
-
+        if s.lstrip()[0] == '[':
+            return ary.exec(s, 0)
+        else:
+            return obj.exec(s, 0)
 
 if __name__ == "__main__":
     import doctest

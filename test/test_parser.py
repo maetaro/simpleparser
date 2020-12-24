@@ -1,3 +1,5 @@
+"""test."""
+
 def test_1() -> None:
     """test_1."""
     a: int = 1

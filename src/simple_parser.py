@@ -1,52 +1,65 @@
-# -*- coding: utf-8 -*-
+"""a simple parser combinator."""
 
 import re
 
 
 class ParseResult:
-    """Parsed Result class"""
+    """Parsed Result class."""
 
     def __init__(self, success, tokens, position, message=""):
+        """Initialize method."""
         self.success = success
         self.tokens = tokens
         self.position = position
         self.message = message
 
     def result(self):
+        """Return parsed result."""
+        # TODO: success()メソッドとcatch()メソッドにする。
+        #       p.exec().success(lamdba result: print(result))など
         return [self.success, self.tokens, self.position]
 
 
 class Success(ParseResult):
+    """Parsed Success class."""
 
     def __init__(self, tokens, position):
+        """Initialize method."""
         super().__init__(True, tokens, position)
 
     def result(self):
+        """Return parsed result."""
         return self.tokens
 
 
 class Failure(ParseResult):
+    """Parsed Success class."""
 
     def __init__(self, message, position):
+        """Initialize method."""
         super().__init__(False, None, position, message)
 
     def result(self):
+        """Return parsed result."""
         return self.message
 
 
 class Parser:
-    """a parser class.
-    """
+    """a parser class."""
+
     def __init__(self, f):
+        """Initialize method."""
         self.__f = f
         return
 
     @property
     def exec(self):
+        """Return the executable function object."""
         return self.__f
 
     def __add__(self, other):
-        """
+        r"""Add method.
+
         Example
         -------
         >>> parse = token('foo') + (token('bar') | token('baz'))

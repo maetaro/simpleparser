@@ -68,12 +68,15 @@ class Parser:
         >>> parse.exec('foobaz').result()
         ['foo', 'baz']
         >>> parse.exec('foo').result()
-        'parse error at (3): unexpected  expecting bar\\nparse error at (3): unexpected  expecting baz'
-        """
+        'parse error at (3): unexpected  expecting bar\nparse error at (3): unexpected  expecting baz'
+        """  # noqa: E501
         return seq(self, other)
 
     def __or__(self, other):
-        """
+        """Or Method.
+
+        Example
+        -------
         >>> foo = token("foo")
         >>> bar = token("bar")
         >>> p = foo | bar
@@ -83,7 +86,8 @@ class Parser:
         return choice(self, other)
 
     def map(self, selector):
-        """
+        """Map method.
+
         Example
         -------
         >>> cell = (token("foo") | token("bar")).map(lambda x: ["".join(x) + "aaa"])
@@ -93,7 +97,7 @@ class Parser:
         ['baraaa']
         >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0).result()
         ['foo aaa']
-        """
+        """  # noqa: E501
         def f(target, position=0):
             result = self.exec(target, position)
             if not result.success:
@@ -105,7 +109,8 @@ class Parser:
 
 
 def token(s):
-    """
+    """Token function.
+
     Example
     -------
     >>> token("foo").exec("foobar").result()
@@ -118,14 +123,16 @@ def token(s):
     def f(target, position=0):
         if target[position:position + length] == s:
             return Success([s], position + length)
-        return Failure("parse error at (" + str(position) + "): unexpected " + target[position:position + length] + " expecting " + s, position)
+        msg = ("parse error at (" + str(position) + "):"
+               " unexpected " + target[position:position + length] + ""
+               " expecting " + s + "")
+        return Failure(msg, position)
 
     return Parser(f)
 
 
 def regex(pattern):
-    """
-    regex function returns a function that parses the beginning of the received string with the regular expression pattern.
+    """Regex function returns a function that parses the beginning of the received string with the regular expression pattern.
 
     Parameters
     ----------
@@ -141,12 +148,15 @@ def regex(pattern):
     ['2014']
     >>> parser.exec('01', 0).result()
     'parse error at (0): unexpected 01 expecting ([1-9][0-9]*)'
-    """
+    """  # noqa: E501
     def f(target, position):
         m = re.match(pattern, target[position:])
         if m:
             return Success([m.group()], position + len(m.group()))
-        return Failure("parse error at (" + str(position) + "): unexpected " + target[position:] + " expecting " + pattern, position)
+        msg = ("parse error at (" + str(position) + "):"
+               " unexpected " + target[position:] + ""
+               " expecting " + pattern + "")
+        return Failure(msg, position)
 
     return Parser(f)
 
@@ -159,7 +169,7 @@ def noneOf(s):
     -------
     >>> noneOf("abcdefg").exec("hello", 0).result()
     ['h']
-    """
+    """  # noqa: E501
     def f(target, position=0):
         exists = False
         targetChar = target[position:position + 1]
@@ -169,19 +179,21 @@ def noneOf(s):
                 break
         if not exists:
             return Success([targetChar], position + 1)
-        return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)
+        return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)  # noqa: E501
 
     return Parser(f)
 
 
 def char(s):
-    """
-    """
+    """Char function."""
     return token(s)
 
 
 def endBy(parser, sep):
-    """endBy p sep parses zero or more occurrences of p, separated and ended by sep. Returns a list of values returned by p.
+    r"""The endBy p sep parses zero or more occurrences of p, separated and ended by sep.
+
+    Returns a list of values returned by p.
+
     Example
     -------
     >>> endBy(regex('\w*'), token(',')).exec('').result()
@@ -192,7 +204,7 @@ def endBy(parser, sep):
     ['hoge', 'hoge', '']
     >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,-').result()
     'parse error.'
-    """
+    """  # noqa: D401, E501
     def f(target, position=0):
         result = []
         pos = position
@@ -221,12 +233,13 @@ def endBy(parser, sep):
 
 
 def sepBy(parser, sep):
-    """sepBy(parser, sep) parses zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
+    r"""Parses zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
+
     Example
     -------
     >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge').result()
     ['hoge', 'hoge']
-    """
+    """  # noqa: D401, E501
     def f(target, position=0):
         result = []
         pos = position
@@ -252,7 +265,8 @@ def sepBy(parser, sep):
 
 
 def many(parser):
-    """
+    """Many function.
+
     Example
     -------
     >>> many(token('hoge')).exec('hogehoge').result()
@@ -282,7 +296,8 @@ def many(parser):
 
 
 def choice(*args):
-    """
+    """Choice function.
+
     Example
     -------
     >>> parse = many(choice(token('hoge'), token('fuga')))
@@ -311,7 +326,8 @@ def choice(*args):
 
 
 def seq(*args):
-    """
+    r"""Seq function.
+
     Example
     -------
     >>> parse = seq(token('foo'), choice(token('bar'), token('baz')))
@@ -320,8 +336,8 @@ def seq(*args):
     >>> parse.exec('foobaz').result()
     ['foo', 'baz']
     >>> parse.exec('foo').result()
-    'parse error at (3): unexpected  expecting bar\\nparse error at (3): unexpected  expecting baz'
-    """
+    'parse error at (3): unexpected  expecting bar\nparse error at (3): unexpected  expecting baz'
+    """  # noqa: E501
     parsers = args
 
     def f(target, position=0):
@@ -345,7 +361,8 @@ def seq(*args):
 
 
 def option(parser):
-    """
+    """Option function.
+
     Example
     -------
     >>> parser = option(token('hoge'))
@@ -364,7 +381,8 @@ def option(parser):
 
 
 def lazy(callback):
-    """
+    """Lazy function.
+
     Example
     -------
     >>> parse = option(seq(token('hoge'), lazy(lambda: parse)))
@@ -383,12 +401,13 @@ def lazy(callback):
 
 
 def map(parser, selector):
-    """
+    """Map function.
+
     Example
     -------
     >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0).result()
     ['foo aaa']
-    """
+    """  # noqa: E501
     def f(target, position):
         result = parser.exec(target, position)
         if not result.success:

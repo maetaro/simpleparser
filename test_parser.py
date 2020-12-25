@@ -1,6 +1,7 @@
 """test."""
 
-from simple_parser.simple_parser import char, token, Success
+from simple_parser.simple_parser import token
+
 
 def test_1() -> None:
     """test_1."""
@@ -10,5 +11,6 @@ def test_1() -> None:
 
 
 def test_token_1() -> None:
-    f = char("foo")
+    """test_token_1."""
+    f = token("foo")
     assert f.exec("foobar").result() == ["foo"]

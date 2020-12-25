@@ -108,7 +108,7 @@ class Parser:
         return Parser(f)
 
 
-def token(s):
+def token(s: str) -> Parser:
     """Token function.
 
     Example
@@ -120,7 +120,7 @@ def token(s):
     """
     length = len(s)
 
-    def f(target, position=0):
+    def f(target: str, position: int = 0) -> ParseResult:
         if target[position:position + length] == s:
             return Success([s], position + length)
         msg = ("parse error at (" + str(position) + "):"
@@ -131,7 +131,7 @@ def token(s):
     return Parser(f)
 
 
-def regex(pattern):
+def regex(pattern: str) -> Parser:
     """Regex function returns a function that parses the beginning of the received string with the regular expression pattern.
 
     Parameters
@@ -149,7 +149,7 @@ def regex(pattern):
     >>> parser.exec('01', 0).result()
     'parse error at (0): unexpected 01 expecting ([1-9][0-9]*)'
     """  # noqa: E501
-    def f(target, position):
+    def f(target: str, position: int = 0) -> ParseResult:
         m = re.match(pattern, target[position:])
         if m:
             return Success([m.group()], position + len(m.group()))

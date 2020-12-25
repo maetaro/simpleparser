@@ -10,7 +10,7 @@ Welcome to simple_parser's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   simple_parser
 
 Indices and tables
 ==================

@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
+"""csv parsing sample."""
 
 import simple_parser as p
 
 
 def parseCsv(s):
-    '''
+    r"""Parsecsv class.
+
     http://book.realworldhaskell.org/read/using-parsec.html
 
     Example
@@ -29,7 +25,7 @@ def parseCsv(s):
     [['"l1c1"', '"l1c2"'], ['"l2c1"', '"l2c2"']]
     >>> p("line1\\r\\nline2\\nline3\\n\\rline4\\rline5\\n").result()
     [["line1"], ["line2"], ["line3"], ["line4"], ["line5"]]
-    '''
+    """
 
     def line_selector(x):
         if len(x) == 0:
@@ -39,7 +35,7 @@ def parseCsv(s):
         return [x]
 
     dquote = p.token("\"")
-    cell = (dquote + p.regex("\w*") + dquote).map(lambda x: "".join(x))
+    cell = (dquote + p.regex(r"\w*") + dquote).map(lambda x: "".join(x))
     line = p.sepBy(cell, p.char(',')).map(line_selector)
     eol = p.token("\n\r") | p.token("\r\n") | p.token("\n") | p.token("\r")
 

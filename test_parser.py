@@ -1,6 +1,6 @@
 """test."""
 
-from simple_parser.simple_parser import token
+from simple_parser import token
 
 
 def test_1() -> None:

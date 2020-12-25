@@ -1,17 +1,19 @@
 """a simple parser combinator."""
 
 import re
+from collections.abc import Callable
 
 
 class ParseResult:
     """Parsed Result class."""
 
-    def __init__(self, success, tokens, position, message=""):
+    def __init__(self, success: bool, tokens,
+                 position: int, message: str = ""):
         """Initialize method."""
-        self.success = success
+        self.success: bool = success
         self.tokens = tokens
         self.position = position
-        self.message = message
+        self.message: str = message
 
     def result(self):
         """Return parsed result."""
@@ -23,7 +25,7 @@ class ParseResult:
 class Success(ParseResult):
     """Parsed Success class."""
 
-    def __init__(self, tokens, position):
+    def __init__(self, tokens, position: int):
         """Initialize method."""
         super().__init__(True, tokens, position)
 
@@ -35,7 +37,7 @@ class Success(ParseResult):
 class Failure(ParseResult):
     """Parsed Success class."""
 
-    def __init__(self, message, position):
+    def __init__(self, message: str, position: int):
         """Initialize method."""
         super().__init__(False, None, position, message)
 

@@ -1,7 +1,7 @@
 """a simple parser combinator."""
 
 import re
-from collections.abc import Callable
+# from collections.abc import Callable
 
 
 class ParseResult:
@@ -163,7 +163,7 @@ def regex(pattern: str) -> Parser:
     return Parser(f)
 
 
-def noneOf(s):
+def noneOf(s: str) -> Parser:
     """
     As the dual of oneOf, noneOf cs succeeds if the current character not in the supplied list of characters cs. Returns the parsed character.
 
@@ -172,7 +172,7 @@ def noneOf(s):
     >>> noneOf("abcdefg").exec("hello", 0).result()
     ['h']
     """  # noqa: E501
-    def f(target, position=0):
+    def f(target, position: int = 0):
         exists = False
         targetChar = target[position:position + 1]
         for c in s:
@@ -186,12 +186,12 @@ def noneOf(s):
     return Parser(f)
 
 
-def char(s):
+def char(s: str) -> Parser:
     """Char function."""
     return token(s)
 
 
-def endBy(parser, sep):
+def endBy(parser, sep: str) -> Parser:
     r"""The endBy p sep parses zero or more occurrences of p, separated and ended by sep.
 
     Returns a list of values returned by p.

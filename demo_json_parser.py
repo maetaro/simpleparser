@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
+"""csv parsing sample."""
 
 import simple_parser as p
 
 
 class json_parser:
-    '''
+    """Json parser.
+
     Example
     -------
     >>> p = json_parser()
@@ -27,22 +23,25 @@ class json_parser:
     ['{', 'p2', ':', "'a'", '}']
     >>> p.parse("{p1:1,p2:'a',p3:[]}").result()
     ['{', 'p1', ':', 1, 'p2', ':', "'a'", 'p3', ':', '[', ']', '}']
-    '''
+    """
+
     def parse(self, s):
-        propName = p.regex("\w+")
+        """Parse method."""
+        propName = p.regex(r"\w+")
         colon = p.token(":")
         sq = p.token("'")
         dq = p.token('"')
-        p_str = ((dq + p.regex("\w*") + dq) | (sq + p.regex("\w*") + sq)).map(lambda x: "".join(x))
-        num = p.regex("\d+").map(lambda x: int(float("".join(x))) if "".join(x) != "" else x)
+        p_str = ((dq + p.regex(r"\w*") + dq) | (sq + p.regex(r"\w*") + sq)).map(lambda x: "".join(x))  # noqa: E501
+        num = p.regex(r"\d+").map(lambda x: int(float("".join(x))) if "".join(x) != "" else x)  # noqa: E501
         p_multi = num | p_str | p.lazy(lambda: obj) | p.lazy(lambda: ary)
-        ary = p.token("[") + p.option(p.sepBy(p_multi, p.token(","))) + p.token("]")
-        obj = p.token("{") + p.option(p.sepBy(propName + colon + p_multi, p.token(","))) + p.token("}")
+        ary = p.token("[") + p.option(p.sepBy(p_multi, p.token(","))) + p.token("]")  # noqa: E501
+        obj = p.token("{") + p.option(p.sepBy(propName + colon + p_multi, p.token(","))) + p.token("}")  # noqa: E501
 
         if s.lstrip()[0] == '[':
             return ary.exec(s, 0)
         else:
             return obj.exec(s, 0)
+
 
 if __name__ == "__main__":
     import doctest

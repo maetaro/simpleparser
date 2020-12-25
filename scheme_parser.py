@@ -1,11 +1,12 @@
 """scheme parsing sample."""
 
-import os
-import sys
+# import os
+# import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
+# sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 
 import simple_parser as p
+# from simple_parser.src.simple_parser import token, regex
 
 
 class schemeparser:
@@ -22,10 +23,10 @@ class schemeparser:
 
     def parse(self, s):
         """Parse method."""
-        l_paren = p.token("(")
-        r_paren = p.token(")")
-        symbol = p.regex(r"\S")
-        blank = p.regex(r"\s")
+        l_paren = token("(")
+        r_paren = token(")")
+        symbol = regex(r"\S")
+        blank = regex(r"\s")
         # opt_blank = p.option(blank)
 
         # operator = symbol

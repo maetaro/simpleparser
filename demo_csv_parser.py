@@ -4,7 +4,7 @@ import simple_parser as p
 
 
 def parseCsv(s):
-    r"""Parsecsv class.
+    r"""Parsecsv.
 
     http://book.realworldhaskell.org/read/using-parsec.html
 

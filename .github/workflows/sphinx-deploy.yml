@@ -68,5 +68,4 @@ jobs:
           git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
           git add simple_parser
           git commit -m "auto rebuilding site"
-          ssh -vT git@github.com
           git push origin master

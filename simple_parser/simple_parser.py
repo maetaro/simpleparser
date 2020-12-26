@@ -119,7 +119,7 @@ def token(s: str) -> Parser:
     >>> token("bar").exec("foobar").result()
     'parse error at (0): unexpected foo expecting bar'
     """
-    length = len(s)
+    length: int = len(s)
 
     def f(target: str, position: int = 0) -> ParseResult:
         if target[position:position + length] == s:

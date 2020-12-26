@@ -54,8 +54,8 @@ jobs:
       run: |
           mkdir ~/.ssh
           ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
-          echo "${{ secrets.MY_ACTIONS_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
-          chmod 400 ~/.ssh/id_ed25519
+          echo "${{ secrets.MY_ACTIONS_DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
     - name: Push
       env:
         GITHUB_USER: "builduser"

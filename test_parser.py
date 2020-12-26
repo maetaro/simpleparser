@@ -1,6 +1,6 @@
 """test."""
 
-from simple_parser import token, regex
+from simpleparser import token, regex
 
 
 def test_1() -> None:

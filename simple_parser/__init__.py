@@ -1,3 +1,3 @@
-"""simple_parser."""
+"""simpleparser."""
 
-from simple_parser.simple_parser import * # noqa F401
+from simpleparser.simpleparser import * # noqa F401

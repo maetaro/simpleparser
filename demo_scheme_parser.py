@@ -1,6 +1,6 @@
 """scheme parsing sample."""
 
-import simple_parser as p
+import simpleparser as p
 
 
 class schemeparser:

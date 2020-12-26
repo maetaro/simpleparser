@@ -1,6 +1,6 @@
 """csv parsing sample."""
 
-import simple_parser as p
+import simpleparser as p
 
 
 def parseCsv(s):

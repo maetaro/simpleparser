@@ -1,14 +1,13 @@
 """a simple parser combinator."""
 
 import re
-# from collections.abc import Callable
 
 
 class ParseResult:
     """Parsed Result class."""
 
     def __init__(self, success: bool, tokens,
-                 position: int, message: str = ""):
+                 position: int, message: str = "") -> None:
         """Initialize method."""
         self.success: bool = success
         self.tokens = tokens
@@ -172,9 +171,9 @@ def noneOf(s: str) -> Parser:
     >>> noneOf("abcdefg").exec("hello", 0).result()
     ['h']
     """  # noqa: E501
-    def f(target, position: int = 0):
-        exists = False
-        targetChar = target[position:position + 1]
+    def f(target: str, position: int = 0):
+        exists: bool = False
+        targetChar: str = target[position:position + 1]
         for c in s:
             if targetChar == c:
                 exists = True
@@ -191,7 +190,7 @@ def char(s: str) -> Parser:
     return token(s)
 
 
-def endBy(parser, sep: str) -> Parser:
+def endBy(parser: Parser, sep: Parser) -> Parser:
     r"""The endBy p sep parses zero or more occurrences of p, separated and ended by sep.
 
     Returns a list of values returned by p.
@@ -207,9 +206,9 @@ def endBy(parser, sep: str) -> Parser:
     >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,-').result()
     'parse error.'
     """  # noqa: D401, E501
-    def f(target, position=0):
+    def f(target: str, position: int = 0) -> ParseResult:
         result = []
-        pos = position
+        pos: int = position
 
         while True:
             parsed = parser.exec(target, pos)
@@ -234,7 +233,7 @@ def endBy(parser, sep: str) -> Parser:
     return Parser(f)
 
 
-def sepBy(parser, sep):
+def sepBy(parser: Parser, sep: Parser) -> Parser:
     r"""Parses zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
 
     Example
@@ -242,7 +241,7 @@ def sepBy(parser, sep):
     >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge').result()
     ['hoge', 'hoge']
     """  # noqa: D401, E501
-    def f(target, position=0):
+    def f(target: str, position: int = 0):
         result = []
         pos = position
 
@@ -266,7 +265,7 @@ def sepBy(parser, sep):
     return Parser(f)
 
 
-def many(parser):
+def many(parser: Parser) -> Parser:
     """Many function.
 
     Example
@@ -278,7 +277,7 @@ def many(parser):
     >>> many(token('foobar')).exec('foo', 0).result()
     []
     """
-    def f(target, position=0):
+    def f(target: str, position: int = 0) -> ParseResult:
         result = []
         pos = position
 
@@ -297,7 +296,7 @@ def many(parser):
     return Parser(f)
 
 
-def choice(*args):
+def choice(*args) -> Parser:
     """Choice function.
 
     Example
@@ -314,7 +313,7 @@ def choice(*args):
     """
     parsers = args
 
-    def f(target, position=0):
+    def f(target: str, position: int = 0) -> ParseResult:
         messages = []
         for parser in parsers:
             parsed = parser.exec(target, position)
@@ -362,7 +361,7 @@ def seq(*args):
     return Parser(f)
 
 
-def option(parser):
+def option(parser: Parser):
     """Option function.
 
     Example
@@ -373,7 +372,7 @@ def option(parser):
     >>> parser.exec('fuga', 0).result()
     []
     """
-    def f(target, position):
+    def f(target: str, position: int = 0) -> ParseResult:
         result = parser.exec(target, position)
         if result.success:
             return result
@@ -382,7 +381,7 @@ def option(parser):
     return Parser(f)
 
 
-def lazy(callback):
+def lazy(callback) -> Parser:
     """Lazy function.
 
     Example
@@ -402,7 +401,7 @@ def lazy(callback):
     return Parser(f)
 
 
-def map(parser, selector):
+def map(parser: Parser, selector) -> Parser:
     """Map function.
 
     Example
@@ -410,7 +409,7 @@ def map(parser, selector):
     >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0).result()
     ['foo aaa']
     """  # noqa: E501
-    def f(target, position):
+    def f(target: str, position: int = 0) -> ParseResult:
         result = parser.exec(target, position)
         if not result.success:
             return result

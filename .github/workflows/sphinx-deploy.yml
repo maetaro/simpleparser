@@ -60,7 +60,7 @@ jobs:
       env:
         GITHUB_USER: "builduser"
         GITHUB_EMAIL: "test-builduser@sample.com"
-        GITHUB_REPOSITORY: "maetaro.github.io"
+        GITHUB_REPOSITORY: "maetaro/maetaro.github.io"
       run: |
           cd maetaro.github.io
           git config --local user.name "${GITHUB_USER}"

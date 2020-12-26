@@ -1,4 +1,4 @@
-simple_parser
+simpleparser
 =============
 
 .. toctree::
@@ -7,5 +7,5 @@ simple_parser
    demo_csv_parser
    demo_json_parser
    demo_scheme_parser
-   simple_parser
+   simpleparser
    test_parser

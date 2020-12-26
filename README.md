@@ -1,4 +1,4 @@
-simple_parser
+simpleparser
 =============
 
 Overview
@@ -10,4 +10,4 @@ a simple parser combinator.
 API Documentation.
 ------------------
 
-https://maetaro.github.io/simple_parser/
+https://maetaro.github.io/simpleparser/

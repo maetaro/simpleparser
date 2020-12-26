@@ -7,7 +7,7 @@ Submodules
 simple\_parser.simple\_parser module
 ------------------------------------
 
-.. automodule:: simple_parser.simple_parser
+.. automodule:: simpleparser.simpleparser
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ simple\_parser.simple\_parser module
 Module contents
 ---------------
 
-.. automodule:: simple_parser
+.. automodule:: simpleparser
    :members:
    :undoc-members:
    :show-inheritance:

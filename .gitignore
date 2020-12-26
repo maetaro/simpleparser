@@ -112,7 +112,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-.vs/simple_parser/v15/.suo
+.vs/simpleparser/v15/.suo
 env3.6/
 env_code_check/
 .DS_Store

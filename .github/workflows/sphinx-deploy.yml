@@ -46,10 +46,11 @@ jobs:
       env:
         GITHUB_USER: "builduser"
         GITHUB_EMAIL: "test-builduser@sample.com"
+        GITHUB_REPOSITORY: "maetaro.github.io"
       run: |
-          # git config --local user.name "${GITHUB_USER}"
-          # git config --local user.email "${GITHUB_EMAIL}"
-          # git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
-          # git add docs2
-          # git commit -m "auto rebuilding site"
-          # git push origin master
+          git config --local user.name "${GITHUB_USER}"
+          git config --local user.email "${GITHUB_EMAIL}"
+          git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
+          git add docs
+          git commit -m "auto rebuilding site"
+          git push origin master

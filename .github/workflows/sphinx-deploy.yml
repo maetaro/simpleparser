@@ -51,7 +51,8 @@ jobs:
       run: |
         cp -rf simple_parser/docs/build/html maetaro.github.io/simple_parser
         # rename '_static' to 'static'
-        mv maetaro.github.io/simple_parser/_static maetaro.github.io/simple_parser/static
+        cd maetaro.github.io/simple_parser
+        mv _static static
         grep -lr '\_static' ./* | xargs sed -i.bak -e 's/\_static/static/g'
     - name: Deploy Configuration
       run: |

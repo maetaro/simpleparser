@@ -1,11 +1,11 @@
-simple\_parser package
-======================
+simpleparser package
+====================
 
 Submodules
 ----------
 
-simple\_parser.simple\_parser module
-------------------------------------
+simpleparser.simpleparser module
+--------------------------------
 
 .. automodule:: simpleparser.simpleparser
    :members:

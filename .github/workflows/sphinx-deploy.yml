@@ -65,7 +65,8 @@ jobs:
           cd maetaro.github.io
           git config --local user.name "${GITHUB_USER}"
           git config --local user.email "${GITHUB_EMAIL}"
-          git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
+          git remote set-url origin git@github.com:maetaro/maetaro.github.io.git
+          git config remote.origin.url "git@github.com:maetaro/maetaro.github.io.git"
           git add simple_parser
           git commit -m "auto rebuilding site"
           git push origin master

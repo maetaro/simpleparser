@@ -40,15 +40,15 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -r requirements_dev.txt
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
     - name: Build
       run: |
         cd simple_parser/docs
         make html
     - name: File Copy
       run: |
-        cp -rf simple_parser/docs/build maetaro.github.io/simple_parser
+        cp -rf simple_parser/docs/build/html maetaro.github.io/simple_parser
     - name: Deploy Configuration
       run: |
           mkdir ~/.ssh

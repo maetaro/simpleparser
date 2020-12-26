@@ -115,6 +115,6 @@ dmypy.json
 .vs/simple_parser/v15/.suo
 env3.6/
 env_code_check/
-doc/.DS_Store
 .DS_Store
 venv_dev/
+.vscode/

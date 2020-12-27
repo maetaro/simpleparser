@@ -1,6 +1,7 @@
 """a simple parser combinator."""
 
 import re
+# from .prim import token
 
 
 class ParseResult:
@@ -109,27 +110,27 @@ class Parser:
         return Parser(f)
 
 
-def token(s: str) -> Parser:
-    """Token function.
+# def token(s: str) -> Parser:
+#     """Token function.
 
-    Example
-    -------
-    >>> token("foo").exec("foobar").result()
-    ['foo']
-    >>> token("bar").exec("foobar").result()
-    'parse error at (0): unexpected foo expecting bar'
-    """
-    length: int = len(s)
+#     Example
+#     -------
+#     >>> token("foo").exec("foobar").result()
+#     ['foo']
+#     >>> token("bar").exec("foobar").result()
+#     'parse error at (0): unexpected foo expecting bar'
+#     """
+#     length: int = len(s)
 
-    def f(target: str, position: int = 0) -> ParseResult:
-        if target[position:position + length] == s:
-            return Success([s], position + length)
-        msg = ("parse error at (" + str(position) + "):"
-               " unexpected " + target[position:position + length] + ""
-               " expecting " + s + "")
-        return Failure(msg, position)
+#     def f(target: str, position: int = 0) -> ParseResult:
+#         if target[position:position + length] == s:
+#             return Success([s], position + length)
+#         msg = ("parse error at (" + str(position) + "):"
+#                " unexpected " + target[position:position + length] + ""
+#                " expecting " + s + "")
+#         return Failure(msg, position)
 
-    return Parser(f)
+#     return Parser(f)
 
 
 def regex(pattern: str) -> Parser:

@@ -131,7 +131,7 @@ def noneOf(s: str) -> Parser:
     >>> noneOf("abcdefg").exec("hello", 0)
     ['h']
     """  # noqa: E501
-    def f(target: str, position: int = 0):
+    def f(target: str, position: int = 0) -> ParseResult:
         exists: bool = False
         targetChar: str = target[position:position + 1]
         for c in s:
@@ -201,7 +201,7 @@ def sepBy(parser: Parser, sep: Parser) -> Parser:
     >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge')
     ['hoge', 'hoge']
     """  # noqa: D401, E501
-    def f(target: str, position: int = 0):
+    def f(target: str, position: int = 0) -> ParseResult:
         result = []
         pos = position
 
@@ -302,7 +302,7 @@ def seq(*args):
     """  # noqa: E501
     parsers = args
 
-    def f(target, position=0):
+    def f(target, position=0) -> ParseResult:
         result = []
         pos_org = position
         for parser in parsers:
@@ -322,7 +322,7 @@ def seq(*args):
     return Parser(f)
 
 
-def option(parser: Parser):
+def option(parser: Parser) -> Parser:
     """Option function.
 
     Example
@@ -355,7 +355,7 @@ def lazy(callback) -> Parser:
     >>> parse.exec('hogehogehoge', 0)
     ['hoge', 'hoge', 'hoge']
     """
-    def f(target, position):
+    def f(target, position) -> Parser:
         parse = callback()
         return parse.exec(target, position)
 

@@ -1,22 +1,18 @@
 """a simple parser combinator."""
 
+from typing import List
+
 
 class ParseResult:
     """Parsed Result class."""
 
-    def __init__(self, success: bool, tokens,
+    def __init__(self, success: bool, tokens: List[str],
                  position: int, message: str = "") -> None:
         """Initialize method."""
         self.success: bool = success
-        self.tokens = tokens
-        self.position = position
+        self.tokens: List[str] = tokens
+        self.position: int = position
         self.message: str = message
-
-    # def result(self):
-    #     """Return parsed result."""
-    #     # TODO: success()メソッドとcatch()メソッドにする。
-    #     #       p.exec().success(lamdba result: print(result))など
-    #     return [self.success, self.tokens, self.position]
 
     def then(self, f):
         """Execute function then parse is success."""
@@ -34,13 +30,9 @@ class ParseResult:
 class Success(ParseResult):
     """Parsed Success class."""
 
-    def __init__(self, tokens, position: int):
+    def __init__(self, tokens: List[str], position: int):
         """Initialize method."""
         super().__init__(True, tokens, position)
-
-    # def result(self):
-    #     """Return parsed result."""
-    #     return self.tokens
 
     def __repr__(self):
         """Return string."""
@@ -48,15 +40,11 @@ class Success(ParseResult):
 
 
 class Failure(ParseResult):
-    """Parsed Success class."""
+    """Parsed Failure class."""
 
     def __init__(self, message: str, position: int):
         """Initialize method."""
-        super().__init__(False, None, position, message)
-
-    # def result(self):
-    #     """Return parsed result."""
-    #     return self.message
+        super().__init__(False, [], position, message)
 
     def __repr__(self):
         """Return string."""

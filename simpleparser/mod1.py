@@ -192,7 +192,7 @@ def char(s: str) -> Parser:
 
 
 def endBy(parser: Parser, sep: Parser) -> Parser:
-    r"""The endBy p sep parses zero or more occurrences of p, separated and ended by sep.
+    r"""Endby p sep parses zero or more occurrences of p, separated and ended by sep.
 
     Returns a list of values returned by p.
 
@@ -235,7 +235,7 @@ def endBy(parser: Parser, sep: Parser) -> Parser:
 
 
 def sepBy(parser: Parser, sep: Parser) -> Parser:
-    r"""Parses zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
+    r"""Parse zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
 
     Example
     -------

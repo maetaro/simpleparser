@@ -15,10 +15,10 @@ def test_1() -> None:
 def test_token_1() -> None:
     """test_token_1."""
     f = token("foo")
-    assert f.exec("foobar").result() == ["foo"]
+    assert f.exec("foobar").tokens == ["foo"]
 
 
 def test_regex_1() -> None:
     """test_regex_2."""
     f = regex("([1-9]+)")
-    assert f.exec("123").result() == ["123"]
+    assert f.exec("123").tokens == ["123"]

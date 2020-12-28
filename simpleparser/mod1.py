@@ -4,48 +4,6 @@ import re
 from simpleparser.parseresult import ParseResult, Success, Failure
 
 
-# class ParseResult:
-#     """Parsed Result class."""
-
-#     def __init__(self, success: bool, tokens,
-#                  position: int, message: str = "") -> None:
-#         """Initialize method."""
-#         self.success: bool = success
-#         self.tokens = tokens
-#         self.position = position
-#         self.message: str = message
-
-#     def result(self):
-#         """Return parsed result."""
-#         # TODO: success()メソッドとcatch()メソッドにする。
-#         #       p.exec().success(lamdba result: print(result))など
-#         return [self.success, self.tokens, self.position]
-
-
-# class Success(ParseResult):
-#     """Parsed Success class."""
-
-#     def __init__(self, tokens, position: int):
-#         """Initialize method."""
-#         super().__init__(True, tokens, position)
-
-#     def result(self):
-#         """Return parsed result."""
-#         return self.tokens
-
-
-# class Failure(ParseResult):
-#     """Parsed Success class."""
-
-#     def __init__(self, message: str, position: int):
-#         """Initialize method."""
-#         super().__init__(False, None, position, message)
-
-#     def result(self):
-#         """Return parsed result."""
-#         return self.message
-
-
 class Parser:
     """a parser class."""
 
@@ -65,12 +23,13 @@ class Parser:
         Example
         -------
         >>> parse = token('foo') + (token('bar') | token('baz'))
-        >>> parse.exec('foobar').result()
+        >>> parse.exec('foobar')
         ['foo', 'bar']
-        >>> parse.exec('foobaz').result()
+        >>> parse.exec('foobaz')
         ['foo', 'baz']
-        >>> parse.exec('foo').result()
-        'parse error at (3): unexpected  expecting bar\nparse error at (3): unexpected  expecting baz'
+        >>> parse.exec('foo')
+        parse error at (3): unexpected  expecting bar
+        parse error at (3): unexpected  expecting baz
         """  # noqa: E501
         return seq(self, other)
 
@@ -82,7 +41,7 @@ class Parser:
         >>> foo = token("foo")
         >>> bar = token("bar")
         >>> p = foo | bar
-        >>> p.exec("foo").result()
+        >>> p.exec("foo")
         ['foo']
         """
         return choice(self, other)
@@ -93,11 +52,11 @@ class Parser:
         Example
         -------
         >>> cell = (token("foo") | token("bar")).map(lambda x: ["".join(x) + "aaa"])
-        >>> cell.exec("foooo").result()
+        >>> cell.exec("foooo")
         ['fooaaa']
-        >>> cell.exec("barrr").result()
+        >>> cell.exec("barrr")
         ['baraaa']
-        >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0).result()
+        >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0)
         ['foo aaa']
         """  # noqa: E501
         def f(target, position=0):
@@ -115,10 +74,10 @@ def token(s: str) -> Parser:
 
     Example
     -------
-    >>> token("foo").exec("foobar").result()
+    >>> token("foo").exec("foobar")
     ['foo']
-    >>> token("bar").exec("foobar").result()
-    'parse error at (0): unexpected foo expecting bar'
+    >>> token("bar").exec("foobar")
+    parse error at (0): unexpected foo expecting bar
     """
     length: int = len(s)
 
@@ -143,13 +102,13 @@ def regex(pattern: str) -> Parser:
     Example
     -------
     >>> parser = regex("hoge")
-    >>> parser.exec('hoge', 0).result()
+    >>> parser.exec('hoge', 0)
     ['hoge']
     >>> parser = regex("([1-9][0-9]*)")
-    >>> parser.exec('2014a', 0).result()
+    >>> parser.exec('2014a', 0)
     ['2014']
-    >>> parser.exec('01', 0).result()
-    'parse error at (0): unexpected 01 expecting ([1-9][0-9]*)'
+    >>> parser.exec('01', 0)
+    parse error at (0): unexpected 01 expecting ([1-9][0-9]*)
     """  # noqa: E501
     def f(target: str, position: int = 0) -> ParseResult:
         m = re.match(pattern, target[position:])
@@ -169,7 +128,7 @@ def noneOf(s: str) -> Parser:
 
     Example
     -------
-    >>> noneOf("abcdefg").exec("hello", 0).result()
+    >>> noneOf("abcdefg").exec("hello", 0)
     ['h']
     """  # noqa: E501
     def f(target: str, position: int = 0):
@@ -198,14 +157,14 @@ def endBy(parser: Parser, sep: Parser) -> Parser:
 
     Example
     -------
-    >>> endBy(regex('\w*'), token(',')).exec('').result()
+    >>> endBy(regex('\w*'), token(',')).exec('')
     ['']
-    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge').result()
+    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge')
     ['hoge', 'hoge']
-    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,').result()
+    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,')
     ['hoge', 'hoge', '']
-    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,-').result()
-    'parse error.'
+    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,-')
+    parse error.
     """  # noqa: D401, E501
     def f(target: str, position: int = 0) -> ParseResult:
         result = []
@@ -239,7 +198,7 @@ def sepBy(parser: Parser, sep: Parser) -> Parser:
 
     Example
     -------
-    >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge').result()
+    >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge')
     ['hoge', 'hoge']
     """  # noqa: D401, E501
     def f(target: str, position: int = 0):
@@ -271,11 +230,11 @@ def many(parser: Parser) -> Parser:
 
     Example
     -------
-    >>> many(token('hoge')).exec('hogehoge').result()
+    >>> many(token('hoge')).exec('hogehoge')
     ['hoge', 'hoge']
-    >>> many(token('hoge')).exec('', 0).result()
+    >>> many(token('hoge')).exec('', 0)
     []
-    >>> many(token('foobar')).exec('foo', 0).result()
+    >>> many(token('foobar')).exec('foo', 0)
     []
     """
     def f(target: str, position: int = 0) -> ParseResult:
@@ -303,13 +262,13 @@ def choice(*args) -> Parser:
     Example
     -------
     >>> parse = many(choice(token('hoge'), token('fuga')))
-    >>> parse.exec('', 0).result()
+    >>> parse.exec('', 0)
     []
-    >>> parse.exec('hogehoge', 0).result()
+    >>> parse.exec('hogehoge', 0)
     ['hoge', 'hoge']
-    >>> parse.exec('fugahoge', 0).result()
+    >>> parse.exec('fugahoge', 0)
     ['fuga', 'hoge']
-    >>> parse.exec('fugafoo', 0).result()
+    >>> parse.exec('fugafoo', 0)
     ['fuga']
     """
     parsers = args
@@ -333,12 +292,13 @@ def seq(*args):
     Example
     -------
     >>> parse = seq(token('foo'), choice(token('bar'), token('baz')))
-    >>> parse.exec('foobar').result()
+    >>> parse.exec('foobar')
     ['foo', 'bar']
-    >>> parse.exec('foobaz').result()
+    >>> parse.exec('foobaz')
     ['foo', 'baz']
-    >>> parse.exec('foo').result()
-    'parse error at (3): unexpected  expecting bar\nparse error at (3): unexpected  expecting baz'
+    >>> parse.exec('foo')
+    parse error at (3): unexpected  expecting bar
+    parse error at (3): unexpected  expecting baz
     """  # noqa: E501
     parsers = args
 
@@ -368,9 +328,9 @@ def option(parser: Parser):
     Example
     -------
     >>> parser = option(token('hoge'))
-    >>> parser.exec('hoge', 0).result()
+    >>> parser.exec('hoge', 0)
     ['hoge']
-    >>> parser.exec('fuga', 0).result()
+    >>> parser.exec('fuga', 0)
     []
     """
     def f(target: str, position: int = 0) -> ParseResult:
@@ -388,11 +348,11 @@ def lazy(callback) -> Parser:
     Example
     -------
     >>> parse = option(seq(token('hoge'), lazy(lambda: parse)))
-    >>> parse.exec('hoge', 0).result()
+    >>> parse.exec('hoge', 0)
     ['hoge']
-    >>> parse.exec('hogehoge', 0).result()
+    >>> parse.exec('hogehoge', 0)
     ['hoge', 'hoge']
-    >>> parse.exec('hogehogehoge', 0).result()
+    >>> parse.exec('hogehogehoge', 0)
     ['hoge', 'hoge', 'hoge']
     """
     def f(target, position):
@@ -407,7 +367,7 @@ def map(parser: Parser, selector) -> Parser:
 
     Example
     -------
-    >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0).result()
+    >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0)
     ['foo aaa']
     """  # noqa: E501
     def f(target: str, position: int = 0) -> ParseResult:

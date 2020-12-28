@@ -12,11 +12,23 @@ class ParseResult:
         self.position = position
         self.message: str = message
 
-    def result(self):
-        """Return parsed result."""
-        # TODO: success()メソッドとcatch()メソッドにする。
-        #       p.exec().success(lamdba result: print(result))など
-        return [self.success, self.tokens, self.position]
+    # def result(self):
+    #     """Return parsed result."""
+    #     # TODO: success()メソッドとcatch()メソッドにする。
+    #     #       p.exec().success(lamdba result: print(result))など
+    #     return [self.success, self.tokens, self.position]
+
+    def then(self, f):
+        """Execute function then parse is success."""
+        if self.success:
+            f(self)
+        return self
+
+    def catch(self, f):
+        """Execute function then parse is success."""
+        if not self.success:
+            f(self)
+        return self
 
 
 class Success(ParseResult):
@@ -26,9 +38,13 @@ class Success(ParseResult):
         """Initialize method."""
         super().__init__(True, tokens, position)
 
-    def result(self):
-        """Return parsed result."""
-        return self.tokens
+    # def result(self):
+    #     """Return parsed result."""
+    #     return self.tokens
+
+    def __repr__(self):
+        """Return string."""
+        return str(self.tokens)
 
 
 class Failure(ParseResult):
@@ -38,8 +54,12 @@ class Failure(ParseResult):
         """Initialize method."""
         super().__init__(False, None, position, message)
 
-    def result(self):
-        """Return parsed result."""
+    # def result(self):
+    #     """Return parsed result."""
+    #     return self.message
+
+    def __repr__(self):
+        """Return string."""
         return self.message
 
 

@@ -1,6 +1,7 @@
 """csv parsing sample."""
 
 import simpleparser as p
+from simpleparser import token, regex
 
 
 class json_parser:
@@ -27,15 +28,15 @@ class json_parser:
 
     def parse(self, s):
         """Parse method."""
-        propName = p.regex(r"\w+")
-        colon = p.token(":")
-        sq = p.token("'")
-        dq = p.token('"')
-        p_str = ((dq + p.regex(r"\w*") + dq) | (sq + p.regex(r"\w*") + sq)).map(lambda x: "".join(x))  # noqa: E501
-        num = p.regex(r"\d+").map(lambda x: int(float("".join(x))) if "".join(x) != "" else x)  # noqa: E501
+        propName = regex(r"\w+")
+        colon = token(":")
+        sq = token("'")
+        dq = token('"')
+        p_str = ((dq + regex(r"\w*") + dq) | (sq + regex(r"\w*") + sq)).map(lambda x: "".join(x))  # noqa: E501
+        num = regex(r"\d+").map(lambda x: int(float("".join(x))) if "".join(x) != "" else x)  # noqa: E501
         p_multi = num | p_str | p.lazy(lambda: obj) | p.lazy(lambda: ary)
-        ary = p.token("[") + p.option(p.sepBy(p_multi, p.token(","))) + p.token("]")  # noqa: E501
-        obj = p.token("{") + p.option(p.sepBy(propName + colon + p_multi, p.token(","))) + p.token("}")  # noqa: E501
+        ary = token("[") + p.option(p.sepBy(p_multi, token(","))) + token("]")  # noqa: E501
+        obj = token("{") + p.option(p.sepBy(propName + colon + p_multi, token(","))) + token("}")  # noqa: E501
 
         if s.lstrip()[0] == '[':
             return ary.exec(s, 0)

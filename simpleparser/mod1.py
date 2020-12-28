@@ -1,13 +1,14 @@
 """a simple parser combinator."""
 
 import re
+from typing import Callable
 from simpleparser.parseresult import ParseResult, Success, Failure
 
 
 class Parser:
     """a parser class."""
 
-    def __init__(self, f):
+    def __init__(self, f: Callable[[str, int], ParseResult]):
         """Initialize method."""
         self.__f = f
         return
@@ -342,7 +343,7 @@ def option(parser: Parser) -> Parser:
     return Parser(f)
 
 
-def lazy(callback) -> Parser:
+def lazy(callback: Callable[[], Parser]) -> Parser:
     """Lazy function.
 
     Example
@@ -355,7 +356,7 @@ def lazy(callback) -> Parser:
     >>> parse.exec('hogehogehoge', 0)
     ['hoge', 'hoge', 'hoge']
     """
-    def f(target, position) -> Parser:
+    def f(target, position) -> ParseResult:
         parse = callback()
         return parse.exec(target, position)
 

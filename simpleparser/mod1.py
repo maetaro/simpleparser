@@ -286,7 +286,7 @@ def choice(*args) -> Parser:
     return Parser(f)
 
 
-def seq(*args):
+def seq(*args) -> Parser:
     r"""Seq function.
 
     Example
@@ -302,7 +302,7 @@ def seq(*args):
     """  # noqa: E501
     parsers = args
 
-    def f(target, position=0) -> ParseResult:
+    def f(target: str, position: int = 0) -> ParseResult:
         result = []
         pos_org = position
         for parser in parsers:

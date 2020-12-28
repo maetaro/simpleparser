@@ -3,7 +3,7 @@
 from typing import Callable
 from simpleparser.parseresult import ParseResult, Success, Failure
 from simpleparser.parser import Parser
-from simpleparser.prim import token, regex
+from simpleparser.prim import token
 
 
 def noneOf(s: str) -> Parser:
@@ -41,6 +41,7 @@ def endBy(parser: Parser, sep: Parser) -> Parser:
 
     Example
     -------
+    >>> from simpleparser.prim import regex
     >>> endBy(regex('\w*'), token(',')).exec('')
     ['']
     >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge')
@@ -82,6 +83,7 @@ def sepBy(parser: Parser, sep: Parser) -> Parser:
 
     Example
     -------
+    >>> from simpleparser.prim import regex
     >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge')
     ['hoge', 'hoge']
     """  # noqa: D401, E501

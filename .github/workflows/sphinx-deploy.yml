@@ -45,13 +45,17 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Build
       run: |
-        cd simpleparser/docs
-        make html
+        cd simpleparser
+        sphinx-apidoc -f -o ./docs/source .
+        cd docs
+        sphinx-build -b html ./source ./build/html
     - name: File Copy
       run: |
+        rm -rf maetaro.github.io/simpleparser
         cp -rf simpleparser/docs/build/html maetaro.github.io/simpleparser
         # rename '_static' to 'static'
         cd maetaro.github.io/simpleparser
+        ls -la
         mv _static static
         grep -lr '\_static' ./* | xargs sed -i.bak -e 's/\_static/static/g'
     - name: Deploy Configuration

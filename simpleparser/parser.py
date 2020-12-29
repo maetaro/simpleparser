@@ -12,10 +12,9 @@ class Parser:
         self.__f = f
         return
 
-    @property
-    def exec(self) -> Callable[[str, int], ParseResult]:
+    def exec(self, s: str, i: int = 0) -> ParseResult:
         """Return the executable function object."""
-        return self.__f
+        return self.__f(s, i)
 
     # def __add__(self, other):
     #     r"""Add method.

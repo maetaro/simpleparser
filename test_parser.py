@@ -1,6 +1,6 @@
 """test."""
 
-from simpleparser import token, regex
+from simpleparser import token, regex, Parser, ParseResult
 
 
 def test_1() -> None:
@@ -12,7 +12,7 @@ def test_1() -> None:
 
 def test_token_1() -> None:
     """test_token_1."""
-    f = token("foo")
+    f: Parser = token("foo")
     assert f.exec("foobar").tokens == ["foo"]
 
 
@@ -20,10 +20,10 @@ def test_token_2() -> None:
     """test_token_2."""
     f = token("foo")
 
-    def success(result):
+    def success(result: ParseResult) -> None:
         assert True, "It was executed even though the parse failed."
 
-    def fail(result):
+    def fail(result: ParseResult) -> None:
         assert result.success is False
         assert result.message == "parse error at (0): unexpected fii expecting foo"  # noqa F501
 

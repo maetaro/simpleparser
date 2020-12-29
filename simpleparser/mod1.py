@@ -1,6 +1,6 @@
 """a simple parser combinator."""
 
-from typing import Callable
+from typing import Callable, List
 from simpleparser.parseresult import ParseResult, Success, Failure
 from simpleparser.parser import Parser
 from simpleparser.prim import token
@@ -59,10 +59,7 @@ def endBy(parser: Parser, sep: Parser) -> Parser:
             parsed = parser.exec(target, pos)
             if not parsed.success:
                 break
-            if type(parsed.tokens) is list:
-                result.extend(parsed.tokens)
-            else:
-                result.append(parsed.tokens)
+            result.extend(parsed.tokens)
             pos = parsed.position
 
             parsed = sep.exec(target, pos)
@@ -95,10 +92,7 @@ def sepBy(parser: Parser, sep: Parser) -> Parser:
             parsed = parser.exec(target, pos)
             if not parsed.success:
                 break
-            if type(parsed.tokens) is list:
-                result.extend(parsed.tokens)
-            else:
-                result.append(parsed.tokens)
+            result.extend(parsed.tokens)
             pos = parsed.position
 
             parsed = sep.exec(target, pos)
@@ -125,14 +119,14 @@ def lazy(callback: Callable[[], Parser]) -> Parser:
     >>> parse.exec('hogehogehoge', 0)
     ['hoge', 'hoge', 'hoge']
     """
-    def f(target, position) -> ParseResult:
+    def f(target: str, position: int) -> ParseResult:
         parse = callback()
         return parse.exec(target, position)
 
     return Parser(f)
 
 
-def map(parser: Parser, selector) -> Parser:
+def map(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:
     """Map function.
 
     Example

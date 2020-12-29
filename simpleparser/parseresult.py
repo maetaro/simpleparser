@@ -1,6 +1,9 @@
 """a simple parser combinator."""
 
-from typing import List, Callable
+from typing import List, Callable, TypeVar
+
+
+T = TypeVar('T', bound='ParseResult')
 
 
 class ParseResult:
@@ -14,6 +17,18 @@ class ParseResult:
         self.position: int = position
         self.message: str = message
 
+    def then(self: T, f: Callable[[T], None]) -> T:
+        """Execute function then parse is success."""
+        if self.success:
+            f(self)
+        return self
+
+    def catch(self: T, f: Callable[[T], None]) -> T:
+        """Execute function then parse is success."""
+        if not self.success:
+            f(self)
+        return self
+
 
 class Success(ParseResult):
     """Parsed Success class."""
@@ -26,18 +41,6 @@ class Success(ParseResult):
         """Return string."""
         return str(self.tokens)
 
-    def then(self, f: Callable[[ParseResult], None]) -> ParseResult:
-        """Execute function then parse is success."""
-        if self.success:
-            f(self)
-        return self
-
-    def catch(self, f: Callable[[ParseResult], None]) -> ParseResult:
-        """Execute function then parse is success."""
-        if not self.success:
-            f(self)
-        return self
-
 
 class Failure(ParseResult):
     """Parsed Failure class."""
@@ -49,18 +52,6 @@ class Failure(ParseResult):
     def __repr__(self) -> str:
         """Return string."""
         return self.message
-
-    def then(self, f: Callable[[ParseResult], None]) -> ParseResult:
-        """Execute function then parse is success."""
-        if self.success:
-            f(self)
-        return self
-
-    def catch(self, f: Callable[[ParseResult], None]) -> ParseResult:
-        """Execute function then parse is success."""
-        if not self.success:
-            f(self)
-        return self
 
 
 if __name__ == "__main__":

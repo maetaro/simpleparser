@@ -1,9 +1,10 @@
 """csv parsing sample."""
 
+from typing import List
 import simpleparser as p
 
 
-def parseCsv(s):
+def parseCsv(s: str) -> p.ParseResult:
     r"""Parsecsv.
 
     http://book.realworldhaskell.org/read/using-parsec.html
@@ -28,17 +29,17 @@ def parseCsv(s):
     # [["line1"], ["line2"], ["line3"], ["line4"], ["line5"]]
     """
 
-    def line_selector(x):
+    def line_selector(x: List[str]) -> List[str]:
         if len(x) == 0:
             return []
         if x is None:
             return []
-        return [x]
+        return x
 
     dquote = p.token("\"")
-    cell = (dquote + p.regex(r"\w*") + dquote).map(lambda x: "".join(x))
-    line = p.sepBy(cell, p.char(',')).map(line_selector)
-    eol = p.token("\n\r") | p.token("\r\n") | p.token("\n") | p.token("\r")
+    cell = p.map(p.seq(dquote, p.regex(r"\w*"), dquote), lambda x: ["".join(x)])  # noqa F501
+    line = p.map(p.sepBy(cell, p.char(',')), line_selector)
+    eol = p.choice(p.token("\n\r"), p.token("\r\n"), p.token("\n"), p.token("\r"))  # noqa F501
 
     parser = p.endBy(line, eol)
 

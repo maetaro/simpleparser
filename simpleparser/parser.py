@@ -13,7 +13,7 @@ class Parser:
         return
 
     @property
-    def exec(self):
+    def exec(self) -> Callable[[str, int], ParseResult]:
         """Return the executable function object."""
         return self.__f
 

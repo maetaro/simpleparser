@@ -3,7 +3,6 @@
 from typing import Callable, List
 from simpleparser.parseresult import ParseResult, Success, Failure
 from simpleparser.parser import Parser
-from simpleparser.prim import token
 
 
 def noneOf(s: str) -> Parser:
@@ -12,6 +11,7 @@ def noneOf(s: str) -> Parser:
 
     Example
     -------
+    >>> from simpleparser import noneOf
     >>> noneOf("abcdefg").exec("hello", 0)
     ['h']
     """  # noqa: E501
@@ -29,11 +29,6 @@ def noneOf(s: str) -> Parser:
     return Parser(f)
 
 
-def char(s: str) -> Parser:
-    """Char function."""
-    return token(s)
-
-
 def endBy(parser: Parser, sep: Parser) -> Parser:
     r"""Endby p sep parses zero or more occurrences of p, separated and ended by sep.
 
@@ -41,7 +36,7 @@ def endBy(parser: Parser, sep: Parser) -> Parser:
 
     Example
     -------
-    >>> from simpleparser.prim import regex
+    >>> from simpleparser import token, regex, endBy
     >>> endBy(regex('\w*'), token(',')).exec('')
     ['']
     >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge')
@@ -80,7 +75,7 @@ def sepBy(parser: Parser, sep: Parser) -> Parser:
 
     Example
     -------
-    >>> from simpleparser.prim import regex
+    >>> from simpleparser import token, regex, sepBy
     >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge')
     ['hoge', 'hoge']
     """  # noqa: D401, E501
@@ -110,7 +105,7 @@ def lazy(callback: Callable[[], Parser]) -> Parser:
 
     Example
     -------
-    >>> from simpleparser.comb import seq, option
+    >>> from simpleparser import token, seq, option
     >>> parse = option(seq(token('hoge'), lazy(lambda: parse)))
     >>> parse.exec('hoge', 0)
     ['hoge']
@@ -131,6 +126,7 @@ def map(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:
 
     Example
     -------
+    >>> from simpleparser import token, map
     >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0)
     ['foo aaa']
     """  # noqa: E501

@@ -1,5 +1,6 @@
 """a simple parser combinator."""
 
+from typing import List
 from simpleparser.parseresult import ParseResult, Success, Failure
 from simpleparser.parser import Parser
 
@@ -25,10 +26,7 @@ def many(parser: Parser) -> Parser:
             parsed = parser.exec(target, pos)
             if not parsed.success:
                 break
-            if type(parsed.tokens) is list:
-                result.extend(parsed.tokens)
-            else:
-                result.append(parsed.tokens)
+            result.extend(parsed.tokens)
             pos = parsed.position
 
         return Success(result, pos)
@@ -36,7 +34,7 @@ def many(parser: Parser) -> Parser:
     return Parser(f)
 
 
-def choice(*args) -> Parser:
+def choice(*args: Parser) -> Parser:
     """Choice function.
 
     Example
@@ -67,7 +65,7 @@ def choice(*args) -> Parser:
     return Parser(f)
 
 
-def seq(*args) -> Parser:
+def seq(*args: Parser) -> Parser:
     r"""Seq function.
 
     Example
@@ -85,18 +83,15 @@ def seq(*args) -> Parser:
     parsers = args
 
     def f(target: str, position: int = 0) -> ParseResult:
-        result = []
+        result: List[str] = []
         pos_org = position
         for parser in parsers:
-            parsed = parser.exec(target, position)
+            parsed: ParseResult = parser.exec(target, position)
             if not parsed.success:
                 return Failure(parsed.message, pos_org)
             if parsed.tokens is None:
                 continue
-            if type(parsed.tokens) is list:
-                result.extend(parsed.tokens)
-            else:
-                result.append(parsed.tokens)
+            result.extend(parsed.tokens)
             position = parsed.position
 
         return Success(result, position)

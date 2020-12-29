@@ -4,10 +4,26 @@ simpleparser package
 Submodules
 ----------
 
+simpleparser.comb module
+------------------------
+
+.. automodule:: simpleparser.comb
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 simpleparser.mod1 module
 ------------------------
 
 .. automodule:: simpleparser.mod1
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+simpleparser.parser module
+--------------------------
+
+.. automodule:: simpleparser.parser
    :members:
    :undoc-members:
    :show-inheritance:

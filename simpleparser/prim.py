@@ -8,12 +8,19 @@ from simpleparser.parser import Parser
 def token(s: str) -> Parser:
     """Token function.
 
+    Parameters
+    ----------
+    s: str
+        a literal string.
+
     Example
     -------
-    >>> token("foo").exec("foobar")
+    >>> from simpleparser import token
+    >>> foo = token("foo")
+    >>> foo.exec("foobar")
     ['foo']
-    >>> token("bar").exec("foobar")
-    parse error at (0): unexpected foo expecting bar
+    >>> foo.exec("alice")
+    parse error at (0): unexpected ali expecting foo
     """
     length: int = len(s)
 
@@ -35,6 +42,7 @@ def regex(pattern: str) -> Parser:
     ----------
     pattern: str
         a regular expression string.
+
     Example
     -------
     >>> parser = regex("hoge")
@@ -56,6 +64,11 @@ def regex(pattern: str) -> Parser:
         return Failure(msg, position)
 
     return Parser(f)
+
+
+def char() -> Parser:
+    """Char function."""
+    return regex(r"\S")
 
 
 if __name__ == "__main__":

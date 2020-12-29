@@ -16,7 +16,7 @@ class schemeparser:
     # [True, ['(', '+', ' ', '1', ' ', '(', ' ', '-', ' ', '2', ' ', '3', ')', ')'], 13]
     """  # noqa: E501
 
-    def parse(self, s):
+    def parse(self, s: str) -> p.ParseResult:
         """Parse method."""
         l_paren = p.token("(")
         r_paren = p.token(")")

@@ -45,14 +45,12 @@ def regex(pattern: str) -> Parser:
 
     Example
     -------
-    >>> parser = regex("hoge")
-    >>> parser.exec('hoge', 0)
-    ['hoge']
-    >>> parser = regex("([1-9][0-9]*)")
-    >>> parser.exec('2014a', 0)
+    >>> from simpleparser import regex
+    >>> num = regex("([1-9][0-9]*)")
+    >>> num.exec('2014a')
     ['2014']
-    >>> parser.exec('01', 0)
-    parse error at (0): unexpected 01 expecting ([1-9][0-9]*)
+    >>> num.exec('abc')
+    parse error at (0): unexpected abc expecting ([1-9][0-9]*)
     """  # noqa: E501
     def f(target: str, position: int = 0) -> ParseResult:
         m = re.match(pattern, target[position:])

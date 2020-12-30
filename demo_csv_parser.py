@@ -1,18 +1,18 @@
 """csv parsing sample."""
 
 from typing import List
-import simpleparser as p
+from simpleparser import token, ParseResult, sepBy, endBy, transform, seq, regex, choice
 
 
-def parseCsv(s: str) -> p.ParseResult:
-    r"""Parsecsv.
+def parse_csv(s: str) -> ParseResult:
+    r"""parse_csv.
 
     http://book.realworldhaskell.org/read/using-parsec.html
 
     # TODO: doctest
     # Example
     # -------
-    # >>> p = parseCsv
+    # >>> p = parse_csv
     # >>> p("hi").result()
     # "Left \"(unknown)\" (line 1, column 3):"
     # "unexpected end of input"
@@ -36,12 +36,12 @@ def parseCsv(s: str) -> p.ParseResult:
             return []
         return x
 
-    dquote = p.token("\"")
-    cell = p.map(p.seq(dquote, p.regex(r"\w*"), dquote), lambda x: ["".join(x)])  # noqa F501
-    line = p.map(p.sepBy(cell, p.char(',')), line_selector)
-    eol = p.choice(p.token("\n\r"), p.token("\r\n"), p.token("\n"), p.token("\r"))  # noqa F501
+    dquote = token('"')
+    cell = transform(seq(dquote, regex(r"\w*"), dquote), lambda x: ["".join(x)])  # noqa F501
+    line = transform(sepBy(cell, token(',')), line_selector)
+    eol = choice(token("\n\r"), token("\r\n"), token("\n"), token("\r"))  # noqa F501
 
-    parser = p.endBy(line, eol)
+    parser = endBy(line, eol)
 
     return parser.exec(s, 0)
 

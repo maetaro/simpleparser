@@ -256,13 +256,13 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
     return Parser(f)
 
 
-def sepBy(parser: Parser, sep: Parser) -> Parser:
+def sep_by(parser: Parser, sep: Parser) -> Parser:
     r"""Parse zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
 
     Example
     -------
-    >>> from simpleparser import token, regex, sepBy
-    >>> sepBy(regex('\w*'), token(',')).exec('hoge,hoge')
+    >>> from simpleparser import token, regex, sep_by
+    >>> sep_by(regex('\w*'), token(',')).exec('hoge,hoge')
     ['hoge', 'hoge']
     """  # noqa: D401, E501
     def f(target: str, position: int = 0) -> ParseResult:

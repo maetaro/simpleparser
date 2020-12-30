@@ -1,7 +1,7 @@
 """csv parsing sample."""
 
 from simpleparser import (
-    token, regex, choice, seq, lazy, sepBy, option, transform,
+    token, regex, choice, seq, lazy, sep_by, option, transform,
     ParseResult, Parser
 )
 
@@ -37,8 +37,8 @@ class json_parser:
         p_str: Parser = transform(choice(seq(dq, regex(r"\w*"), dq), seq(sq, regex(r"\w*"), sq)), lambda x: ["".join(x)])  # noqa: E501
         num: Parser = transform(regex(r"\d+"), lambda x: [str(int(float("".join(x))))] if "".join(x) != "" else x)  # noqa: E501
         p_multi: Parser = choice(num, p_str, lazy(lambda: obj), lazy(lambda: ary))
-        ary: Parser = seq(token("["), option(sepBy(p_multi, token(","))), token("]"))  # noqa: E501
-        obj: Parser = seq(token("{"), option(sepBy(seq(propName, colon, p_multi), token(","))), token("}"))  # noqa: E501
+        ary: Parser = seq(token("["), option(sep_by(p_multi, token(","))), token("]"))  # noqa: E501
+        obj: Parser = seq(token("{"), option(sep_by(seq(propName, colon, p_multi), token(","))), token("}"))  # noqa: E501
 
         if s.lstrip()[0] == '[':
             return ary.exec(s, 0)

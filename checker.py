@@ -5,7 +5,7 @@ from typing import List
 
 
 def run() -> None:
-    """main function."""
+    """Run check utils."""
     cmds: List[str] = [
         "flake8 simpleparser",
         "mypy .",

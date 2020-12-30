@@ -82,6 +82,7 @@ def choice(*args: Parser) -> Parser:
     parse error at (0): unexpected ali expecting bar
     """
     parsers = args
+    assert len(args) >= 2
 
     def f(target: str, position: int = 0) -> ParseResult:
         messages = []
@@ -97,20 +98,34 @@ def choice(*args: Parser) -> Parser:
 
 
 def seq(*args: Parser) -> Parser:
-    r"""Seq function.
+    """Seq function.
+
+    Receives multiple parser objects.
+    Received parsers are executed in order.
+    And all succeed, this parser will also be treated as successful.
+
+    Parameters
+    ----------
+    args
+        The Parser objects.
+
+    Returns
+    -------
+    Parser
+        generated new Paraser object.
 
     Example
     -------
-    >>> from simpleparser.prim import token
-    >>> parse = seq(token('foo'), choice(token('bar'), token('baz')))
-    >>> parse.exec('foobar')
+    >>> from simpleparser import token, seq
+    >>> p = seq(token('foo'), token('bar'))
+    >>> p.exec('foobar')
     ['foo', 'bar']
-    >>> parse.exec('foobaz')
-    ['foo', 'baz']
-    >>> parse.exec('foo')
+    >>> p.exec('foo')
     parse error at (3): unexpected  expecting bar
-    parse error at (3): unexpected  expecting baz
-    """  # noqa: E501
+    >>> p.exec('foobaz')
+    parse error at (3): unexpected baz expecting bar
+    """
+    assert len(args) >= 2
     parsers = args
 
     def f(target: str, position: int = 0) -> ParseResult:

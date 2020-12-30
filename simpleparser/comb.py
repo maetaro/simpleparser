@@ -1,6 +1,6 @@
 """a simple parser combinator."""
 
-from typing import List
+from typing import List, Callable
 from simpleparser.parseresult import ParseResult, Success, Failure
 from simpleparser.parser import Parser
 

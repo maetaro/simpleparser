@@ -8,6 +8,16 @@ from simpleparser.parser import Parser
 def many(parser: Parser) -> Parser:
     """Many function.
 
+    Parameters
+    ----------
+    parser
+        The Parser object.
+
+    Returns
+    -------
+    Parser
+        generated new Paraser object.
+
     Example
     -------
     >>> from simpleparser import many, token

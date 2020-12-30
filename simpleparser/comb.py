@@ -216,21 +216,22 @@ def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Par
 
 
 def end_by(parser: Parser, sep: Parser) -> Parser:
-    r"""Endby p sep parses zero or more occurrences of p, separated and ended by sep.
+    """Endby p sep parses zero or more occurrences of p, separated and ended by sep.
 
     Returns a list of values returned by p.
 
     Example
     -------
-    >>> from simpleparser import token, regex, end_by
-    >>> end_by(regex('\w*'), token(',')).exec('')
-    ['']
-    >>> end_by(regex('\w*'), token(',')).exec('hoge,hoge')
-    ['hoge', 'hoge']
-    >>> end_by(regex('\w*'), token(',')).exec('hoge,hoge,')
-    ['hoge', 'hoge', '']
-    >>> end_by(regex('\w*'), token(',')).exec('hoge,hoge,-')
-    parse error.
+    >>> from simpleparser import token, end_by
+    >>> p = end_by(token('foo'), token(','))
+    >>> p.exec('')
+    []
+    >>> p.exec('foo,foo')
+    ['foo', 'foo']
+    >>> p.exec('foo,foo,')
+    ['foo', 'foo']
+    >>> p.exec('foo,foo,-')
+    parse error at (0): unexpected foo,foo,- expecting 
     """  # noqa: D401, E501
     def f(target: str, position: int = 0) -> ParseResult:
         result = []
@@ -249,7 +250,10 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
             pos = parsed.position
 
         if pos != len(target):
-            return Failure("parse error.", pos)
+            msg = ("parse error at (" + str(position) + "):"
+                   " unexpected " + target[position:] + ""
+                   " expecting " + str(parser) + "")
+            return Failure(msg, pos)
 
         return Success(result, pos)
 
@@ -257,14 +261,16 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
 
 
 def sep_by(parser: Parser, sep: Parser) -> Parser:
-    r"""Parse zero or more occurrences of parser, separated by sep. Returns a list of values returned by parser.
+    """Parse zero or more occurrences of parser, separated by sep.
+    Returns a list of values returned by parser.
 
     Example
     -------
-    >>> from simpleparser import token, regex, sep_by
-    >>> sep_by(regex('\w*'), token(',')).exec('hoge,hoge')
-    ['hoge', 'hoge']
-    """  # noqa: D401, E501
+    >>> from simpleparser import token, sep_by
+    >>> p = sep_by(token('foo'), token(','))
+    >>> p.exec('foo,foo')
+    ['foo', 'foo']
+    """
     def f(target: str, position: int = 0) -> ParseResult:
         result = []
         pos = position

@@ -23,6 +23,7 @@ def token(s: str) -> Parser:
     parse error at (0): unexpected ali expecting foo
     """
     length: int = len(s)
+    assert length > 0, ""
 
     def f(target: str, position: int = 0) -> ParseResult:
         if target[position:position + length] == s:
@@ -64,9 +65,9 @@ def regex(pattern: str) -> Parser:
     return Parser(f)
 
 
-def char() -> Parser:
-    """Char function."""
-    return regex(r"\S")
+# def char() -> Parser:
+#     """Char function."""
+#     return regex(r"\S")
 
 
 if __name__ == "__main__":

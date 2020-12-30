@@ -148,13 +148,27 @@ def seq(*args: Parser) -> Parser:
 def option(parser: Parser) -> Parser:
     """Option function.
 
+    Receives one parser object.
+    Regardless of the success or failure of Perth,
+    this parser will always succeed.
+
+    Parameters
+    ----------
+    parser
+        The Parser object.
+
+    Returns
+    -------
+    Parser
+        generated new Paraser object.
+
     Example
     -------
-    >>> from simpleparser.prim import token
-    >>> parser = option(token('hoge'))
-    >>> parser.exec('hoge', 0)
-    ['hoge']
-    >>> parser.exec('fuga', 0)
+    >>> from simpleparser import token, option
+    >>> p = option(token('foo'))
+    >>> p.exec('foobar')
+    ['foo']
+    >>> p.exec('bar')  # not fail.
     []
     """
     def f(target: str, position: int = 0) -> ParseResult:

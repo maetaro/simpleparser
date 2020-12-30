@@ -8,6 +8,10 @@ from simpleparser.parser import Parser
 def many(parser: Parser) -> Parser:
     """Many function.
 
+    Receives one parser object.
+    And repeats parsing for success.
+    Must succeed at least once.
+
     Parameters
     ----------
     parser
@@ -22,24 +26,26 @@ def many(parser: Parser) -> Parser:
     -------
     >>> from simpleparser import many, token
     >>> p = many(token("foo"))
-    >>> p.exec('')
-    []
     >>> p.exec('foo')
     ['foo']
     >>> p.exec('foofoo')
     ['foo', 'foo']
     >>> p.exec('bar')
-    []
+    parse error at (0): unexpected bar expecting foo
     """
     def f(target: str, position: int = 0) -> ParseResult:
-        result = []
-        pos = position
+        result: List[str] = []
+        pos: int = position
+        first: bool = True
 
         while True:
             parsed = parser.exec(target, pos)
             if not parsed.success:
+                if first:
+                    return Failure(parsed.message, position)
                 break
             result.extend(parsed.tokens)
+            first = False
             pos = parsed.position
 
         return Success(result, pos)

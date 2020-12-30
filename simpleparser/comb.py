@@ -50,9 +50,12 @@ def many(parser: Parser) -> Parser:
 def choice(*args: Parser) -> Parser:
     """Choice function.
 
+    Receive multiple parser objects.
+    And even one succeeds, this parser is also treated as successful.
+
     Parameters
     ----------
-    *args
+    args
         The Parser objects.
 
     Returns
@@ -142,7 +145,7 @@ def option(parser: Parser) -> Parser:
     return Parser(f)
 
 
-def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:
+def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:  # noqa E501
     """Map function.
 
     Example

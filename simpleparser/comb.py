@@ -201,7 +201,8 @@ def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Par
     Example
     -------
     >>> from simpleparser import token, transform
-    >>> transform(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo")
+    >>> p = transform(token("foo"), lambda x: [",".join(x) + " aaa"])
+    >>> p.exec("foo")
     ['foo aaa']
     """
     def f(target: str, position: int = 0) -> ParseResult:

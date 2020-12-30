@@ -10,12 +10,15 @@ def many(parser: Parser) -> Parser:
 
     Example
     -------
-    >>> from simpleparser.prim import token
-    >>> many(token('hoge')).exec('hogehoge')
-    ['hoge', 'hoge']
-    >>> many(token('hoge')).exec('', 0)
+    >>> from simpleparser import many, token
+    >>> p = many(token("foo"))
+    >>> p.exec('')
     []
-    >>> many(token('foobar')).exec('foo', 0)
+    >>> p.exec('foo')
+    ['foo']
+    >>> p.exec('foofoo')
+    ['foo', 'foo']
+    >>> p.exec('bar')
     []
     """
     def f(target: str, position: int = 0) -> ParseResult:

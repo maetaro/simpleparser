@@ -121,25 +121,6 @@ def lazy(callback: Callable[[], Parser]) -> Parser:
     return Parser(f)
 
 
-def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:
-    """Map function.
-
-    Example
-    -------
-    >>> from simpleparser import token, transform
-    >>> transform(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0)
-    ['foo aaa']
-    """  # noqa: E501
-    def f(target: str, position: int = 0) -> ParseResult:
-        result = parser.exec(target, position)
-        if not result.success:
-            return result
-        result.tokens = selector(result.tokens)
-        return result
-
-    return Parser(f)
-
-
 if __name__ == "__main__":
     import doctest
     doctest.testmod()

@@ -20,7 +20,7 @@ def many(parser: Parser) -> Parser:
     Returns
     -------
     Parser
-        generated new Paraser object.
+        Generated new Parser object.
 
     Example
     -------
@@ -67,7 +67,7 @@ def choice(*args: Parser) -> Parser:
     Returns
     -------
     Parser
-        generated new Paraser object.
+        Generated new Parser object.
 
     Example
     -------
@@ -112,7 +112,7 @@ def seq(*args: Parser) -> Parser:
     Returns
     -------
     Parser
-        generated new Paraser object.
+        Generated new Parser object.
 
     Example
     -------
@@ -160,7 +160,7 @@ def option(parser: Parser) -> Parser:
     Returns
     -------
     Parser
-        generated new Paraser object.
+        Generated new Parser object.
 
     Example
     -------
@@ -181,7 +181,19 @@ def option(parser: Parser) -> Parser:
 
 
 def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:  # noqa E501
-    """Map function.
+    """Transform function.
+
+    Parameters
+    ----------
+    parser
+        The Parser object.
+    selector
+        The function that formats and returns the parse result.
+
+    Returns
+    -------
+    Parser
+        Generated new Parser object.
 
     Example
     -------

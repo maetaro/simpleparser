@@ -1,4 +1,4 @@
-"""a simple parser combinator."""
+"""a parser function's combinator."""
 
 from typing import List, Callable
 from simpleparser.parseresult import ParseResult, Success, Failure
@@ -50,18 +50,27 @@ def many(parser: Parser) -> Parser:
 def choice(*args: Parser) -> Parser:
     """Choice function.
 
+    Parameters
+    ----------
+    *args
+        The Parser objects.
+
+    Returns
+    -------
+    Parser
+        generated new Paraser object.
+
     Example
     -------
-    >>> from simpleparser.prim import token
-    >>> parse = many(choice(token('hoge'), token('fuga')))
-    >>> parse.exec('', 0)
-    []
-    >>> parse.exec('hogehoge', 0)
-    ['hoge', 'hoge']
-    >>> parse.exec('fugahoge', 0)
-    ['fuga', 'hoge']
-    >>> parse.exec('fugafoo', 0)
-    ['fuga']
+    >>> from simpleparser import token, choice
+    >>> p = choice(token('foo'), token('bar'))
+    >>> p.exec('foo')
+    ['foo']
+    >>> p.exec('bar')
+    ['bar']
+    >>> p.exec('alice')
+    parse error at (0): unexpected ali expecting foo
+    parse error at (0): unexpected ali expecting bar
     """
     parsers = args
 

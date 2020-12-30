@@ -46,7 +46,7 @@ jobs:
     - name: Build
       run: |
         cd simpleparser
-        sphinx-apidoc -f -o ./docs/source .
+        sphinx-apidoc -f -e -o ./docs/source .
         cd docs
         sphinx-build -b html ./source ./build/html
     - name: File Copy

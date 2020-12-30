@@ -60,3 +60,5 @@ html_static_path = ['_static']
 # Include Python objects as they appear in source files
 # Default: alphabetically ('alphabetical')
 autodoc_member_order = 'bysource'
+
+autodoc_typehints = 'description'

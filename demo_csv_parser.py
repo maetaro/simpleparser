@@ -1,7 +1,7 @@
 """csv parsing sample."""
 
 from typing import List
-from simpleparser import token, ParseResult, sepBy, endBy, transform, seq, regex, choice
+from simpleparser import token, ParseResult, sepBy, endby, transform, seq, regex, choice
 
 
 def parse_csv(s: str) -> ParseResult:
@@ -41,7 +41,7 @@ def parse_csv(s: str) -> ParseResult:
     line = transform(sepBy(cell, token(',')), line_selector)
     eol = choice(token("\n\r"), token("\r\n"), token("\n"), token("\r"))  # noqa F501
 
-    parser = endBy(line, eol)
+    parser = endby(line, eol)
 
     return parser.exec(s, 0)
 

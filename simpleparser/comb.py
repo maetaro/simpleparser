@@ -215,21 +215,21 @@ def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Par
     return Parser(f)
 
 
-def endBy(parser: Parser, sep: Parser) -> Parser:
+def endby(parser: Parser, sep: Parser) -> Parser:
     r"""Endby p sep parses zero or more occurrences of p, separated and ended by sep.
 
     Returns a list of values returned by p.
 
     Example
     -------
-    >>> from simpleparser import token, regex, endBy
-    >>> endBy(regex('\w*'), token(',')).exec('')
+    >>> from simpleparser import token, regex, endby
+    >>> endby(regex('\w*'), token(',')).exec('')
     ['']
-    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge')
+    >>> endby(regex('\w*'), token(',')).exec('hoge,hoge')
     ['hoge', 'hoge']
-    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,')
+    >>> endby(regex('\w*'), token(',')).exec('hoge,hoge,')
     ['hoge', 'hoge', '']
-    >>> endBy(regex('\w*'), token(',')).exec('hoge,hoge,-')
+    >>> endby(regex('\w*'), token(',')).exec('hoge,hoge,-')
     parse error.
     """  # noqa: D401, E501
     def f(target: str, position: int = 0) -> ParseResult:

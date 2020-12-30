@@ -183,6 +183,9 @@ def option(parser: Parser) -> Parser:
 def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:  # noqa E501
     """Transform function.
 
+    Receives a parser object and a function that transforms the parse results.
+    Apply the received function to the parse result and return it.
+
     Parameters
     ----------
     parser

@@ -121,13 +121,13 @@ def lazy(callback: Callable[[], Parser]) -> Parser:
     return Parser(f)
 
 
-def map(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:
+def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:
     """Map function.
 
     Example
     -------
-    >>> from simpleparser import token, map
-    >>> map(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0)
+    >>> from simpleparser import token, transform
+    >>> transform(token("foo"), lambda x: [",".join(x) + " aaa"]).exec("foo", 0)
     ['foo aaa']
     """  # noqa: E501
     def f(target: str, position: int = 0) -> ParseResult:

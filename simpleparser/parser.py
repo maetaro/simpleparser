@@ -1,6 +1,7 @@
 """a parser module."""
 
 from typing import Callable
+from inspect import stack
 from simpleparser.parseresult import ParseResult
 
 
@@ -10,6 +11,7 @@ class Parser:
     def __init__(self, f: Callable[[str, int], ParseResult]):
         """Initialize method."""
         self.__f = f
+        self.parser_type = [x for x in stack() if x.function != "__init__"][0].function
         return
 
     def exec(self, s: str, i: int = 0) -> ParseResult:
@@ -66,6 +68,22 @@ class Parser:
     #         return result
 
     #     return Parser(f)
+
+
+class PrimitiveParser(Parser):
+    """a parser class."""
+
+    def __init__(self, f: Callable[[Parser, str, int], ParseResult], expression):
+        """Initialize method."""
+        # super().__init__(f)
+        self.__f = f
+        self.parser_type = [x for x in stack() if x.function != "__init__"][0].function
+        self._expression = expression
+        return
+
+    def exec(self, s: str, i: int = 0) -> ParseResult:
+        """Return the executable function object."""
+        return self.__f(self, s, i)
 
 
 if __name__ == "__main__":

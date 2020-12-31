@@ -31,7 +31,7 @@ def many(parser: Parser) -> Parser:
     >>> p.exec('foofoo')
     ['foo', 'foo']
     >>> p.exec('bar')
-    parse error at (0): unexpected bar expecting foo
+    parse error at (0): unexpected bar expecting foo (by token)
     """
     def f(target: str, position: int = 0) -> ParseResult:
         result: List[str] = []
@@ -78,8 +78,8 @@ def choice(*args: Parser) -> Parser:
     >>> p.exec('bar')
     ['bar']
     >>> p.exec('alice')
-    parse error at (0): unexpected ali expecting foo
-    parse error at (0): unexpected ali expecting bar
+    parse error at (0): unexpected ali expecting foo (by token)
+    parse error at (0): unexpected ali expecting bar (by token)
     """
     parsers = args
     assert len(args) >= 2
@@ -121,9 +121,9 @@ def seq(*args: Parser) -> Parser:
     >>> p.exec('foobar')
     ['foo', 'bar']
     >>> p.exec('foo')
-    parse error at (3): unexpected  expecting bar
+    parse error at (3): unexpected  expecting bar (by token)
     >>> p.exec('foobaz')
-    parse error at (3): unexpected baz expecting bar
+    parse error at (3): unexpected baz expecting bar (by token)
     """
     assert len(args) >= 2
     parsers = args
@@ -231,7 +231,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
     >>> p.exec('foo,foo,')
     ['foo', 'foo']
     >>> p.exec('foo,foo,-')
-    parse error at (0): unexpected foo,foo,- expecting
+    parse error at (0): unexpected foo,f expecting foo (by token)
     """  # noqa: D401, E501
     def f(target: str, position: int = 0) -> ParseResult:
         result = []
@@ -250,9 +250,9 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
             pos = parsed.position
 
         if pos != len(target):
-            msg = ("parse error at (" + str(position) + "):"
-                   " unexpected " + target[position:] + ""
-                   " expecting " + str(parser) + "")
+            msg = (f"parse error at ({position}):"
+                   f" unexpected {target[position:position + 5]}"
+                   f" expecting {parser.expression} (by {parser.parser_type})")
             return Failure(msg, pos)
 
         return Success(result, pos)

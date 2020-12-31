@@ -2,7 +2,7 @@
 
 import re
 from simpleparser.parseresult import ParseResult, Success, Failure
-from simpleparser.parser import Parser
+from simpleparser.parser import Parser, PrimitiveParser
 
 
 def token(s: str) -> Parser:
@@ -20,24 +20,28 @@ def token(s: str) -> Parser:
     >>> foo.exec("foobar")
     ['foo']
     >>> foo.exec("alice")
-    parse error at (0): unexpected ali expecting foo
+    parse error at (0): unexpected ali expecting foo (by token)
     """
     length: int = len(s)
     assert length > 0, ""
 
-    def f(target: str, position: int = 0) -> ParseResult:
+    def f(self: PrimitiveParser, target: str,
+          position: int = 0) -> ParseResult:
         if target[position:position + length] == s:
             return Success([s], position + length)
-        msg = ("parse error at (" + str(position) + "):"
-               " unexpected " + target[position:position + length] + ""
-               " expecting " + s + "")
+        msg = (f"parse error at ({position}):"
+               f" unexpected {target[position:position + length]}"
+               f" expecting {s} (by {self.parser_type})")
         return Failure(msg, position)
 
-    return Parser(f)
+    return PrimitiveParser(f, s)
 
 
 def regex(pattern: str) -> Parser:
-    """Regex function returns a function that parses the beginning of the received string with the regular expression pattern.
+    """Regex function.
+
+    Returns a function that parses the beginning of the
+    received string with the regular expression pattern.
 
     Parameters
     ----------
@@ -51,18 +55,19 @@ def regex(pattern: str) -> Parser:
     >>> num.exec('2014a')
     ['2014']
     >>> num.exec('abc')
-    parse error at (0): unexpected abc expecting ([1-9][0-9]*)
-    """  # noqa: E501
-    def f(target: str, position: int = 0) -> ParseResult:
+    parse error at (0): unexpected abc expecting ([1-9][0-9]*) (by regex)
+    """
+    def f(self: PrimitiveParser, target: str,
+          position: int = 0) -> ParseResult:
         m = re.match(pattern, target[position:])
         if m:
             return Success([m.group()], position + len(m.group()))
-        msg = ("parse error at (" + str(position) + "):"
-               " unexpected " + target[position:] + ""
-               " expecting " + pattern + "")
+        msg = (f"parse error at ({position}):"
+               f" unexpected {target[position:position + 5]}"
+               f" expecting {pattern} (by {self.parser_type})")
         return Failure(msg, position)
 
-    return Parser(f)
+    return PrimitiveParser(f, pattern)
 
 
 # def char() -> Parser:

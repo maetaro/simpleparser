@@ -25,7 +25,7 @@ def test_token_2() -> None:
 
     def fail(result: ParseResult) -> None:
         assert result.success is False
-        assert result.message == "parse error at (0): unexpected fii expecting foo"  # noqa F501
+        assert result.message == "parse error at (0): unexpected fii expecting foo (by token)"  # noqa F501
 
     f.exec("fiibar").then(success).catch(fail)
 

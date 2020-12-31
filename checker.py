@@ -7,7 +7,8 @@ from typing import List
 def run() -> None:
     """Run check utils."""
     cmds: List[str] = [
-        "flake8 simpleparser",
+        "flake8 simpleparser --count --select=E9,F63,F7,F82 --show-source --statistics",
+        "flake8 simpleparser --count --max-complexity=10 --max-line-length=127 --statistics",
         "mypy .",
         "pytest",
         "sphinx-apidoc -f -e -o ./docs/source ./",

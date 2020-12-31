@@ -1,7 +1,6 @@
 """a simple parser combinator."""
 
-from simpleparser.parser import Parser
-from simpleparser import token, seq, transform
+from simpleparser import token, seq, transform, choice, Parser
 
 
 def lf() -> Parser:
@@ -59,6 +58,31 @@ def crlf() -> Parser:
     parse error at (0): unexpected fo expecting \r (by token)
     """
     return transform(seq(cr(), lf()), lambda x: ["".join(x)])
+
+
+def newline() -> Parser:
+    r"""Return a new line parser.
+
+    Returns
+    -------
+        Parser: CRLF(\r\n) or CR(\r) or LF(\n) parser.
+
+    Example
+    -------
+    >>> from simpleparser.builtin_parsers import newline
+    >>> p = newline()
+    >>> p.exec(r"\r\nfoo")
+    ['\\r\\n']
+    >>> p.exec(r"\rfoo")
+    ['\\r']
+    >>> p.exec(r"\nfoo")
+    ['\\n']
+    >>> p.exec("foo")
+    parse error at (0): unexpected fo expecting \r (by token)
+    parse error at (0): unexpected fo expecting \r (by token)
+    parse error at (0): unexpected fo expecting \n (by token)
+    """
+    return choice(crlf(), cr(), lf())
 
 
 # def char() -> Parser:

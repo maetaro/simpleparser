@@ -75,28 +75,30 @@ def regex(pattern: str) -> Parser:
 #     return regex(r"\S")
 
 
-def noneOf(s: str) -> Parser:
-    """
-    As the dual of oneOf, noneOf cs succeeds if the current character not in the supplied list of characters cs. Returns the parsed character.
-
-    Example
-    -------
-    >>> from simpleparser import noneOf
-    >>> noneOf("abcdefg").exec("hello", 0)
-    ['h']
-    """  # noqa: E501
-    def f(target: str, position: int = 0) -> ParseResult:
-        exists: bool = False
-        targetChar: str = target[position:position + 1]
-        for c in s:
-            if targetChar == c:
-                exists = True
-                break
-        if not exists:
-            return Success([targetChar], position + 1)
-        return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)  # noqa: E501
-
-    return Parser(f)
+# def noneOf(s: str) -> Parser:
+#     """
+#     As the dual of oneOf, noneOf cs succeeds
+#     if the current character not in the supplied
+#     list of characters cs. Returns the parsed character.
+#
+#     Example
+#     -------
+#     >>> from simpleparser import noneOf
+#     >>> noneOf("abcdefg").exec("hello", 0)
+#     ['h']
+#     """  # noqa: E501
+#     def f(target: str, position: int = 0) -> ParseResult:
+#         exists: bool = False
+#         targetChar: str = target[position:position + 1]
+#         for c in s:
+#             if targetChar == c:
+#                 exists = True
+#                 break
+#         if not exists:
+#             return Success([targetChar], position + 1)
+#         return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)  # noqa: E501
+#
+#     return Parser(f)
 
 
 if __name__ == "__main__":

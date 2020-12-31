@@ -9,4 +9,3 @@ simpleparser
    demo_json_parser
    demo_scheme_parser
    simpleparser
-   test_parser

@@ -262,6 +262,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
 
 def sep_by(parser: Parser, sep: Parser) -> Parser:
     """Parse zero or more occurrences of parser, separated by sep.
+
     Returns a list of values returned by parser.
 
     Example

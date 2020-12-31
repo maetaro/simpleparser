@@ -11,6 +11,7 @@ def run() -> None:
         "flake8 simpleparser --count --max-complexity=10 --max-line-length=127 --statistics",
         "mypy .",
         "pytest",
+        "coverage xml",
         "sphinx-apidoc -f -e -o ./doc/source ./",
         "sphinx-build -b html ./doc/source ./doc/build/html"
     ]

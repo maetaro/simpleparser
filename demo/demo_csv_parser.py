@@ -2,8 +2,9 @@
 
 from typing import List
 from simpleparser import (
-    token, ParseResult, sep_by, end_by, transform, seq, regex, choice
+    token, ParseResult, sep_by, end_by, transform, seq, regex
 )
+from simpleparser.builtin_parsers import newline
 
 
 class CsvParser():
@@ -11,8 +12,8 @@ class CsvParser():
 
     http://book.realworldhaskell.org/read/using-parsec.html
 
-    # Example
-    # -------
+    Example
+    -------
     # >>> p = CsvParser()
     # >>> p.parse("hi")
     # parse error at (0): unexpected hi expecting  (by transform)
@@ -40,7 +41,7 @@ class CsvParser():
         dquote = token('"')
         cell = transform(seq(dquote, regex(r"\w*"), dquote), lambda x: ["".join(x)])  # noqa F501
         line = transform(sep_by(cell, token(',')), line_selector)
-        eol = choice(token("\n\r"), token("\r\n"), token("\n"), token("\r"))  # noqa F501
+        eol = newline()
 
         parser = end_by(line, eol)
 

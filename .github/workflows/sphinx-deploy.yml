@@ -46,13 +46,13 @@ jobs:
     - name: Build
       run: |
         cd simpleparser
-        sphinx-apidoc -f -e -o ./docs/source .
-        cd docs
+        sphinx-apidoc -f -e -o ./doc/source .
+        cd doc
         sphinx-build -b html ./source ./build/html
     - name: File Copy
       run: |
         rm -rf maetaro.github.io/simpleparser
-        cp -rf simpleparser/docs/build/html maetaro.github.io/simpleparser
+        cp -rf simpleparser/doc/build/html maetaro.github.io/simpleparser
         # rename '_static' to 'static'
         cd maetaro.github.io/simpleparser
         ls -la

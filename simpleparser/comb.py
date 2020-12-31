@@ -231,7 +231,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
     >>> p.exec('foo,foo,')
     ['foo', 'foo']
     >>> p.exec('foo,foo,-')
-    parse error at (0): unexpected foo,foo,- expecting 
+    parse error at (0): unexpected foo,foo,- expecting
     """  # noqa: D401, E501
     def f(target: str, position: int = 0) -> ParseResult:
         result = []

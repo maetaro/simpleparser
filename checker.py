@@ -17,6 +17,8 @@ def run() -> None:
     for cmd in cmds:
         result = subprocess.run(cmd, shell=True)
         print(result)
+        if result.returncode != 0:
+            return
 
 
 if __name__ == '__main__':

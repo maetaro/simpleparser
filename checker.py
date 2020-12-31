@@ -18,8 +18,8 @@ def run() -> None:
 
     for cmd in cmds:
         result = subprocess.run(cmd, shell=True)
-        print(result)
         if result.returncode != 0:
+            print(result)
             return
 
 

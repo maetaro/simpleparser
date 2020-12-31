@@ -11,8 +11,8 @@ def run() -> None:
         "flake8 simpleparser --count --max-complexity=10 --max-line-length=127 --statistics",
         "mypy .",
         "pytest",
-        "sphinx-apidoc -f -e -o ./docs/source ./",
-        "sphinx-build -b html ./docs/source ./docs/build/html"
+        "sphinx-apidoc -f -e -o ./doc/source ./",
+        "sphinx-build -b html ./doc/source ./doc/build/html"
     ]
 
     for cmd in cmds:

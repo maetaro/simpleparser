@@ -76,10 +76,7 @@ def regex(pattern: str) -> Parser:
 
 
 def none_of(s: str) -> Parser:
-    """As the dual of oneOf, noneOf cs succeeds
-
-    if the current character not in the supplied
-    list of characters cs. Returns the parsed character.
+    """As the dual of oneOf, noneOf cs succeeds if the current character not in the supplied list of characters cs. Returns the parsed character.  # noqa E501
 
     Example
     -------

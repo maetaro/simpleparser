@@ -64,3 +64,4 @@ html_static_path = ['_static']
 autodoc_member_order = 'bysource'
 
 autodoc_typehints = 'description'
+html_show_sourcelink = False

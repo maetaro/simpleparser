@@ -32,6 +32,8 @@ def many(parser: Parser) -> Parser:
     ['foo', 'foo']
     >>> p.exec('bar')
     parse error at (0): unexpected bar expecting foo (by token)
+    >>> p.exec('foobar')
+    ['foo']
     """
     def f(target: str, position: int = 0) -> ParseResult:
         result: List[str] = []
@@ -43,6 +45,8 @@ def many(parser: Parser) -> Parser:
             if not parsed.success:
                 if first:
                     return Failure(parsed.message, position)
+                break
+            if parsed.position > len(target):
                 break
             result.extend(parsed.tokens)
             first = False
@@ -224,36 +228,54 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
     -------
     >>> from simpleparser import token, end_by
     >>> p = end_by(token('foo'), token(','))
-    >>> p.exec('')
-    []
-    >>> p.exec('foo,foo')
-    ['foo', 'foo']
     >>> p.exec('foo,foo,')
     ['foo', 'foo']
+    >>> p.exec('foo,foo')
+    parse error at (0): unexpected foo,f expecting foo (by token)
     >>> p.exec('foo,foo,-')
     parse error at (0): unexpected foo,f expecting foo (by token)
     """  # noqa: D401, E501
     def f(target: str, position: int = 0) -> ParseResult:
         result = []
         pos: int = position
+        last_is_not_sep = False
 
-        while True:
+        while pos < len(target):
             parsed = parser.exec(target, pos)
             if not parsed.success:
-                break
+                msg = (f"parse error at ({position}):"
+                       f" unexpected {target[position:position + 5]}"
+                       f" expecting {parser.expression} (by {parser.parser_type})")
+                return Failure(msg, pos)
+                # break
+            if parsed.success:
+                last_is_not_sep = True
             result.extend(parsed.tokens)
             pos = parsed.position
 
             parsed = sep.exec(target, pos)
             if not parsed.success:
-                break
+                # fail
+                msg = (f"parse error at ({position}):"
+                       f" unexpected {target[position:position + 5]}"
+                       f" expecting {parser.expression} (by {parser.parser_type})")
+                return Failure(msg, pos)
+                # break
+            if parsed.success:
+                last_is_not_sep = False
             pos = parsed.position
 
-        if pos != len(target):
+        if last_is_not_sep:
             msg = (f"parse error at ({position}):"
                    f" unexpected {target[position:position + 5]}"
                    f" expecting {parser.expression} (by {parser.parser_type})")
             return Failure(msg, pos)
+
+        # if pos != len(target):
+        #     msg = (f"parse error at ({position}):"
+        #            f" unexpected {target[position:position + 5]}"
+        #            f" expecting {parser.expression} (by {parser.parser_type})")
+        #     return Failure(msg, pos)
 
         return Success(result, pos)
 

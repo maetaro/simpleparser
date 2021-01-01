@@ -76,14 +76,27 @@ def regex(pattern: str) -> Parser:
 
 
 def none_of(s: str) -> Parser:
-    """As the dual of oneOf, noneOf cs succeeds if the current character not in the supplied list of characters cs. Returns the parsed character.  # noqa E501
+    """none_of function.
+
+    As the dual of oneOf, none_of(cs) succeeds if the current character
+    not in the supplied list of characters cs. Returns the parsed character.
 
     Example
     -------
-    >>> from simpleparser import none_of
+    >>> from simpleparser import none_of, choice, token, many, transform, seq
     >>> p = none_of("abcdefg")
     >>> p.exec("hello")
     ['h']
+    >>> quotedChar = choice(token('""'), none_of('",'))
+    >>> p = transform(many(quotedChar), lambda x: ["".join(x)])
+    >>> text = r'Shirt with ""Haskell"" text'
+    >>> p.exec(text)
+    ['Shirt with ""Haskell"" text']
+    >>> dq = token('"')
+    >>> p2 = transform(seq(dq, p, dq), lambda x: ["".join(x)])
+    >>> text = r'"Shirt with ""Haskell"" text"'
+    >>> p2.exec(text)
+    ['"Shirt with ""Haskell"" text"']
     """  # noqa: E501
     def f(target: str, position: int = 0) -> ParseResult:
         exists: bool = False
@@ -99,6 +112,6 @@ def none_of(s: str) -> Parser:
     return Parser(f)
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+# if __name__ == "__main__":
+#     import doctest
+#     doctest.testmod()

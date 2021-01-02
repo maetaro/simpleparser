@@ -87,8 +87,8 @@ def none_of(s: str) -> Parser:
     >>> p = none_of("abcdefg")
     >>> p.exec("hello")
     ['h']
-    >>> quotedChar = choice(token('""'), none_of('",'))
-    >>> p = transform(many(quotedChar), lambda x: ["".join(x)])
+    >>> chars = choice(token('""'), none_of('",'))
+    >>> p = transform(many(chars), lambda x: ["".join(x)])
     >>> text = r'Shirt with ""Haskell"" text'
     >>> p.exec(text)
     ['Shirt with ""Haskell"" text']

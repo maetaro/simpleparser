@@ -1,7 +1,7 @@
 """a parser function's combinator."""
 import inspect
 from types import FrameType
-from typing import List, Callable, cast
+from typing import List, Callable, cast, Any
 from simpleparser.parseresult import ParseResult, Success, Failure
 from simpleparser.parser import Parser
 
@@ -198,7 +198,7 @@ def option(parser: Parser) -> Parser:
     return Parser(f)
 
 
-def transform(parser: Parser, selector: Callable[[List[str]], List[str]]) -> Parser:  # noqa E501
+def transform(parser: Parser, selector: Callable[[List[str]], Any]) -> Parser:  # noqa E501
     """Transform function.
 
     Receives a parser object and a function that transforms the parse results.

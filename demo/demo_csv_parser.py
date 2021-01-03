@@ -79,9 +79,9 @@ class CsvParser():
         # eol = token("\n")
         assert eol.exec("\n").tokens == ["\n"]
         assert eol.exec("\nline2").tokens == ["\n"]
-        assert eol.exec('123456789\nline2\n', 9).tokens == ["\n"], eol.exec('123456789\nline2\n', 9)
-        assert eol.exec('"ce ""ll"" 1",cell2\nline2\n', 19).tokens == ["\n"], eol.exec('"ce ""ll"" 1",cell2\nline2\n', 19)
-        assert eol.exec('"ce ""ll"" 1",cell2\nline2\n', 25).tokens == ["\n"], eol.exec('"ce ""ll"" 1",cell2\nline2\n', 25)
+        assert eol.exec('123456789\nline2\n', 9).tokens == ["\n"], eol.exec('123456789\nline2\n', 9)  # noqa E501
+        assert eol.exec('"ce ""ll"" 1",cell2\nline2\n', 19).tokens == ["\n"], eol.exec('"ce ""ll"" 1",cell2\nline2\n', 19)  # noqa E501
+        assert eol.exec('"ce ""ll"" 1",cell2\nline2\n', 25).tokens == ["\n"], eol.exec('"ce ""ll"" 1",cell2\nline2\n', 25)  # noqa E501
         parser = end_by(line, eol)
         assert parser.exec('"ce ""ll"" 1",cell2\nline2\n').tokens == [['"ce ""ll"" 1"', "cell2"], ["line2"]]  # noqa E501
         # s = '"Product","Price"\n"O\'Reilly Socks",10\n"Shirt with ""Haskell"" text",20\n"Shirt ""O\'Reilly"" version",20\n"Haskell Caps",15\n'  # noqa E501

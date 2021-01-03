@@ -42,4 +42,3 @@ def test_none_of_1() -> None:
     p = transform(many(quotedChar), lambda x: ["".join(x)])
     text = r'Shirt with ""Haskell"" text"'
     assert p.exec(text).tokens == ['Shirt with ""Haskell"" text']
-

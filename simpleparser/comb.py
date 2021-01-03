@@ -236,7 +236,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
     parse error at (0): unexpected foo,f expecting foo (by token)
     """  # noqa: D401, E501
     def f(target: str, position: int = 0) -> ParseResult:
-        result = []
+        tokens = []
         pos: int = position
         last_is_not_sep = False
 
@@ -250,7 +250,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
                 # break
             if parsed.success:
                 last_is_not_sep = True
-            result.extend(parsed.tokens)
+            tokens.extend(parsed.tokens)
             pos = parsed.position
 
             parsed = sep.exec(target, pos)
@@ -277,7 +277,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
         #            f" expecting {parser.expression} (by {parser.parser_type})")
         #     return Failure(msg, pos)
 
-        return Success(result, pos)
+        return Success(tokens, pos)
 
     return Parser(f)
 

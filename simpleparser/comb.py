@@ -1,6 +1,7 @@
 """a parser function's combinator."""
-
-from typing import List, Callable
+import inspect
+from types import FrameType
+from typing import List, Callable, cast
 from simpleparser.parseresult import ParseResult, Success, Failure
 from simpleparser.parser import Parser
 
@@ -35,16 +36,20 @@ def many(parser: Parser) -> Parser:
     >>> p.exec('foobar')
     ['foo']
     """
+    name = inspect.getframeinfo(cast(FrameType, inspect.currentframe())).function
+
     def f(target: str, position: int = 0) -> ParseResult:
         result: List[str] = []
         pos: int = position
         first: bool = True
+        children = []
 
         while True:
             parsed = parser.exec(target, pos)
+            children.append(parsed)
             if not parsed.success:
                 if first:
-                    return Failure(parsed.message, position)
+                    return Failure(parsed.message, position, children=children, name=name)
                 break
             if parsed.position > len(target):
                 break
@@ -52,7 +57,7 @@ def many(parser: Parser) -> Parser:
             first = False
             pos = parsed.position
 
-        return Success(result, pos)
+        return Success(result, pos, children=children, name=name)
 
     return Parser(f)
 
@@ -85,18 +90,21 @@ def choice(*args: Parser) -> Parser:
     parse error at (0): unexpected ali expecting foo (by token)
     parse error at (0): unexpected ali expecting bar (by token)
     """
+    name = inspect.getframeinfo(cast(FrameType, inspect.currentframe())).function
     parsers = args
     assert len(args) >= 2
+    children = []
 
     def f(target: str, position: int = 0) -> ParseResult:
         messages = []
         for parser in parsers:
             parsed = parser.exec(target, position)
+            children.append(parsed)
             if parsed.success:
                 return parsed
             messages.append(parsed.message)
 
-        return Failure("\n".join(messages), position)
+        return Failure("\n".join(messages), position, children=children, name=name)
 
     return Parser(f)
 
@@ -131,20 +139,23 @@ def seq(*args: Parser) -> Parser:
     """
     assert len(args) >= 2
     parsers = args
+    children = []
+    name = inspect.getframeinfo(cast(FrameType, inspect.currentframe())).function
 
     def f(target: str, position: int = 0) -> ParseResult:
         result: List[str] = []
         pos_org = position
         for parser in parsers:
             parsed: ParseResult = parser.exec(target, position)
+            children.append(parsed)
             if not parsed.success:
-                return Failure(parsed.message, pos_org)
+                return Failure(parsed.message, pos_org, children=children, name=name)
             if parsed.tokens is None:
                 continue
             result.extend(parsed.tokens)
             position = parsed.position
 
-        return Success(result, position)
+        return Success(result, position, children=children, name=name)
 
     return Parser(f)
 
@@ -175,11 +186,14 @@ def option(parser: Parser) -> Parser:
     >>> p.exec('bar')  # not fail.
     []
     """
+    name = inspect.getframeinfo(cast(FrameType, inspect.currentframe())).function
+
     def f(target: str, position: int = 0) -> ParseResult:
         result = parser.exec(target, position)
+        children = [result]
         if result.success:
             return result
-        return Success([], position)
+        return Success([], position, children=children, name=name)
 
     return Parser(f)
 
@@ -235,18 +249,24 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
     >>> p.exec('foo,foo,-')
     parse error at (0): unexpected foo,f expecting foo (by token)
     """  # noqa: D401, E501
+    name = inspect.getframeinfo(cast(FrameType, inspect.currentframe())).function
+
     def f(target: str, position: int = 0) -> ParseResult:
         tokens = []
         pos: int = position
         last_is_not_sep = False
+        results = []
+        children = []
 
         while pos < len(target):
             parsed = parser.exec(target, pos)
+            children.append(parsed)
+            results.append(parsed)
             if not parsed.success:
                 msg = (f"parse error at ({position}):"
                        f" unexpected {target[position:position + 5]}"
                        f" expecting {parser.expression} (by {parser.parser_type})")
-                return Failure(msg, pos)
+                return Failure(msg, pos, children=results, name=name)
                 # break
             if parsed.success:
                 last_is_not_sep = True
@@ -254,12 +274,14 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
             pos = parsed.position
 
             parsed = sep.exec(target, pos)
+            children.append(parsed)
+            results.append(parsed)
             if not parsed.success:
                 # fail
                 msg = (f"parse error at ({position}):"
                        f" unexpected {target[position:position + 5]}"
                        f" expecting {parser.expression} (by {parser.parser_type})")
-                return Failure(msg, pos)
+                return Failure(msg, pos, children=results, name=name)
                 # break
             if parsed.success:
                 last_is_not_sep = False
@@ -269,7 +291,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
             msg = (f"parse error at ({position}):"
                    f" unexpected {target[position:position + 5]}"
                    f" expecting {parser.expression} (by {parser.parser_type})")
-            return Failure(msg, pos)
+            return Failure(msg, pos, children=results, name=name)
 
         # if pos != len(target):
         #     msg = (f"parse error at ({position}):"
@@ -277,7 +299,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
         #            f" expecting {parser.expression} (by {parser.parser_type})")
         #     return Failure(msg, pos)
 
-        return Success(tokens, pos)
+        return Success(tokens, pos, children=results, name=name)
 
     return Parser(f)
 
@@ -294,23 +316,28 @@ def sep_by(parser: Parser, sep: Parser) -> Parser:
     >>> p.exec('foo,foo')
     ['foo', 'foo']
     """
+    name = inspect.getframeinfo(cast(FrameType, inspect.currentframe())).function
+
     def f(target: str, position: int = 0) -> ParseResult:
         result = []
         pos = position
+        children = []
 
         while True:
             parsed = parser.exec(target, pos)
+            children.append(parsed)
             if not parsed.success:
                 break
             result.extend(parsed.tokens)
             pos = parsed.position
 
             parsed = sep.exec(target, pos)
+            children.append(parsed)
             if not parsed.success:
                 break
             pos = parsed.position
 
-        return Success(result, pos)
+        return Success(result, pos, children=children, name=name)
 
     return Parser(f)
 

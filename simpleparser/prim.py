@@ -24,15 +24,16 @@ def token(s: str) -> Parser:
     """
     length: int = len(s)
     assert length > 0, ""
+    name: str = f"token {s}"
 
     def f(self: PrimitiveParser, target: str,
           position: int = 0) -> ParseResult:
         if target[position:position + length] == s:
-            return Success([s], position + length)
+            return Success([s], position + length, name=name)
         msg = (f"parse error at ({position}):"
                f" unexpected {target[position:position + length]}"
                f" expecting {s} (by {self.parser_type})")
-        return Failure(msg, position)
+        return Failure(msg, position, name=name)
 
     return PrimitiveParser(f, s)
 
@@ -57,15 +58,16 @@ def regex(pattern: str) -> Parser:
     >>> num.exec('abc')
     parse error at (0): unexpected abc expecting ([1-9][0-9]*) (by regex)
     """
+    name: str = f"regex {pattern}"
     def f(self: PrimitiveParser, target: str,
           position: int = 0) -> ParseResult:
         m = re.match(pattern, target[position:])
         if m:
-            return Success([m.group()], position + len(m.group()))
+            return Success([m.group()], position + len(m.group()), name=name)
         msg = (f"parse error at ({position}):"
                f" unexpected {target[position:position + 5]}"
                f" expecting {pattern} (by {self.parser_type})")
-        return Failure(msg, position)
+        return Failure(msg, position, name=name)
 
     return PrimitiveParser(f, pattern)
 
@@ -98,6 +100,8 @@ def none_of(s: str) -> Parser:
     >>> p2.exec(text)
     ['"Shirt with ""Haskell"" text"']
     """  # noqa: E501
+    name: str = f"none_of {s}"
+
     def f(target: str, position: int = 0) -> ParseResult:
         exists: bool = False
         targetChar: str = target[position:position + 1]
@@ -106,8 +110,8 @@ def none_of(s: str) -> Parser:
                 exists = True
                 break
         if not exists:
-            return Success([targetChar], position + 1)
-        return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)  # noqa: E501
+            return Success([targetChar], position + 1, name=name)
+        return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position, name=name)  # noqa: E501
 
     return Parser(f)
 

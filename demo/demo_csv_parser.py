@@ -49,7 +49,6 @@ class CsvParser():
 
     def parse(self, s: str) -> ParseResult:
         """Parse method."""
-
         dq = token('"')
         assert dq.exec('"foo"').tokens == ['"']
 

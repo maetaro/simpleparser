@@ -14,12 +14,10 @@ def lf() -> Parser:
     -------
     >>> from simpleparser.builtin_parsers import lf
     >>> p = lf()
-    >>> p.exec(r"\nfoo")
-    ['\\n']
-    >>> p.exec("foo")
-    parse error at (0): unexpected fo expecting \n (by token)
+    >>> p.exec("\nfoo")
+    ['\n']
     """
-    return token(r"\n")
+    return token("\n")
 
 
 def cr() -> Parser:
@@ -33,12 +31,10 @@ def cr() -> Parser:
     -------
     >>> from simpleparser.builtin_parsers import cr
     >>> p = cr()
-    >>> p.exec(r"\rfoo")
-    ['\\r']
-    >>> p.exec("foo")
-    parse error at (0): unexpected fo expecting \r (by token)
+    >>> p.exec("\rfoo")
+    ['\r']
     """
-    return token(r"\r")
+    return token("\r")
 
 
 def crlf() -> Parser:
@@ -52,10 +48,8 @@ def crlf() -> Parser:
     -------
     >>> from simpleparser.builtin_parsers import crlf
     >>> p = crlf()
-    >>> p.exec(r"\r\nfoo")
-    ['\\r\\n']
-    >>> p.exec("foo")
-    parse error at (0): unexpected fo expecting \r (by token)
+    >>> p.exec("\r\nfoo")
+    ['\r\n']
     """
     return transform(seq(cr(), lf()), lambda x: ["".join(x)])
 
@@ -71,16 +65,12 @@ def newline() -> Parser:
     -------
     >>> from simpleparser.builtin_parsers import newline
     >>> p = newline()
-    >>> p.exec(r"\r\nfoo")
-    ['\\r\\n']
-    >>> p.exec(r"\rfoo")
-    ['\\r']
-    >>> p.exec(r"\nfoo")
-    ['\\n']
-    >>> p.exec("foo")
-    parse error at (0): unexpected fo expecting \r (by token)
-    parse error at (0): unexpected fo expecting \r (by token)
-    parse error at (0): unexpected fo expecting \n (by token)
+    >>> p.exec("\r\nfoo")
+    ['\r\n']
+    >>> p.exec("\rfoo")
+    ['\r']
+    >>> p.exec("\nfoo")
+    ['\n']
     """
     return choice(crlf(), cr(), lf())
 

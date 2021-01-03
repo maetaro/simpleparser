@@ -2,8 +2,8 @@
 
 from typing import List
 from simpleparser import (
-    token, sep_by, end_by, transform, seq, many, choice, regex, none_of,
-    ParseResult, Failure
+    token, sep_by, end_by, transform, seq, many, choice, none_of,
+    ParseResult
 )
 from simpleparser.builtin_parsers import newline
 
@@ -49,18 +49,6 @@ class CsvParser():
 
     def parse(self, s: str) -> ParseResult:
         """Parse method."""
-
-        sample = ["hi",
-            r'"hi",\n',
-            r'"line1"\n"line2"\n"line3"\n',
-            r'"cell1","cell2","cell3"\n',
-            r'"l1c1","l1c2"\n"l2c1","l2c2"\n',
-            r'Hi,\n\n,Hello\n',
-            r'line1\r\nline2\nline3\n\rline4\rline5\n'
-            r"\"This, is, one, big, cell\"\n"
-            r'"Cell without an end\n'
-            r'"Product","Price"\n"O\'Reilly Socks",10\n"Shirt with ""Haskell"" text",20\n"Shirt, ""O\'Reilly"" version",20\n"Haskell Caps",15'  # noqa E501
-            ]
 
         dq = token('"')
         assert dq.exec('"foo"').tokens == ['"']

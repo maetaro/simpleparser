@@ -43,14 +43,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements_dev.txt
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Build
+    - name: Build sphinx
       run: |
         cd simpleparser
         sphinx-apidoc -f -e -o ./doc/source .
         cd doc
         sphinx-build -b html ./source ./build/html
-    - name: File Copy
-      run: |
+        cd ../..
         rm -rf maetaro.github.io/simpleparser/doc
         cp -rf simpleparser/doc/build/html maetaro.github.io/simpleparser/doc
         # rename '_static' to 'static'
@@ -58,6 +57,13 @@ jobs:
         ls -la
         mv _static static
         grep -lr '\_static' ./* | xargs sed -i.bak -e 's/\_static/static/g'
+    - name: Make coverage
+      run: |
+        cd simpleparser
+        pytest --cov-report=html
+        cd ..
+        rm -rf maetaro.github.io/simpleparser/cov
+        cp -rf simpleparser/htmlcov maetaro.github.io/simpleparser/cov
     - name: Deploy Configuration
       run: |
           mkdir ~/.ssh

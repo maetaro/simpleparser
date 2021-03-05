@@ -75,37 +75,32 @@ def newline() -> Parser:
     return choice(crlf(), cr(), lf())
 
 
-# def char() -> Parser:
-#     """Char function."""
-#     return regex(r"\S")
+#TODO: def char() -> Parser:
+#TODO:     """Char function."""
+#TODO:     return regex(r"\S")
 
 
-# def noneOf(s: str) -> Parser:
-#     """
-#     As the dual of oneOf, noneOf cs succeeds
-#     if the current character not in the supplied
-#     list of characters cs. Returns the parsed character.
-#
-#     Example
-#     -------
-#     >>> from simpleparser import noneOf
-#     >>> noneOf("abcdefg").exec("hello", 0)
-#     ['h']
-#     """  # noqa: E501
-#     def f(target: str, position: int = 0) -> ParseResult:
-#         exists: bool = False
-#         targetChar: str = target[position:position + 1]
-#         for c in s:
-#             if targetChar == c:
-#                 exists = True
-#                 break
-#         if not exists:
-#             return Success([targetChar], position + 1)
-#         return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)  # noqa: E501
-#
-#     return Parser(f)
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+#TODO: def noneOf(s: str) -> Parser:
+#TODO:     """
+#TODO:     As the dual of oneOf, noneOf cs succeeds
+#TODO:     if the current character not in the supplied
+#TODO:     list of characters cs. Returns the parsed character.
+#TODO:
+#TODO:     Example
+#TODO:     -------
+#TODO:     >>> from simpleparser import noneOf
+#TODO:     >>> noneOf("abcdefg").exec("hello", 0)
+#TODO:     ['h']
+#TODO:     """  # noqa: E501
+#TODO:     def f(target: str, position: int = 0) -> ParseResult:
+#TODO:         exists: bool = False
+#TODO:         targetChar: str = target[position:position + 1]
+#TODO:         for c in s:
+#TODO:             if targetChar == c:
+#TODO:                 exists = True
+#TODO:                 break
+#TODO:         if not exists:
+#TODO:             return Success([targetChar], position + 1)
+#TODO:         return Failure("parse error at (" + str(position) + "): unexpected " + targetChar + " expecting " + s, position)  # noqa: E501
+#TODO:
+#TODO:     return Parser(f)

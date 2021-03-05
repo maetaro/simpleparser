@@ -51,10 +51,10 @@ jobs:
         sphinx-build -b html ./source ./build/html
     - name: File Copy
       run: |
-        rm -rf maetaro.github.io/simpleparser
-        cp -rf simpleparser/doc/build/html maetaro.github.io/simpleparser
+        rm -rf maetaro.github.io/simpleparser/doc
+        cp -rf simpleparser/doc/build/html maetaro.github.io/simpleparser/doc
         # rename '_static' to 'static'
-        cd maetaro.github.io/simpleparser
+        cd maetaro.github.io/simpleparser/doc
         ls -la
         mv _static static
         grep -lr '\_static' ./* | xargs sed -i.bak -e 's/\_static/static/g'

@@ -14,7 +14,6 @@ class Parser:
         self.parser_type = [x for x in stack() if x.function !=
                             "__init__"][0].function
         self.expression = ""
-        return
 
     def exec(self, s: str, i: int = 0) -> ParseResult:
         """Return the executable function object."""
@@ -88,7 +87,6 @@ class PrimitiveParser(Parser):
         self.parser_type = [x for x in stack() if x.function !=
                             "__init__"][0].function
         self.expression = expression
-        return
 
     def exec(self: T, s: str, i: int = 0) -> ParseResult:
         """Return the executable function object."""

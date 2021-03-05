@@ -11,3 +11,9 @@ API Documentation.
 ------------------
 
 https://maetaro.github.io/simpleparser/doc/
+
+
+TEST Coverage Report.
+---------------------
+
+https://maetaro.github.io/simpleparser/cov/

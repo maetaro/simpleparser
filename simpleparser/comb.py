@@ -359,8 +359,3 @@ def lazy(callback: Callable[[], Parser]) -> Parser:
         return parse.exec(target, position)
 
     return Parser(f)
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

@@ -91,8 +91,3 @@ class PrimitiveParser(Parser):
     def exec(self: T, s: str, i: int = 0) -> ParseResult:
         """Return the executable function object."""
         return self.__f2(self, s, i)
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

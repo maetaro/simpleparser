@@ -63,8 +63,3 @@ class Failure(ParseResult):
     def __repr__(self) -> str:
         """Return string."""
         return self.message
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

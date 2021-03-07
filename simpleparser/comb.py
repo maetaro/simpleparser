@@ -50,7 +50,7 @@ def many(parser: Parser) -> Parser:
             if not parsed.success:
                 if first:
                     return Failure(parsed.message, position, children=children, name=name)
-                break
+                return Success(result, pos, children=children, name=name)
             if parsed.position > len(target):
                 break
             result.extend(parsed.tokens)
@@ -150,7 +150,7 @@ def seq(*args: Parser) -> Parser:
             children.append(parsed)
             if not parsed.success:
                 return Failure(parsed.message, pos_org, children=children, name=name)
-            if parsed.tokens is None:
+            if len(parsed.tokens) == 0:
                 continue
             result.extend(parsed.tokens)
             position = parsed.position
@@ -268,10 +268,11 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
                        f" expecting {parser.expression} (by {parser.parser_type})")
                 return Failure(msg, pos, children=results, name=name)
                 # break
-            if parsed.success:
-                last_is_not_sep = True
+            last_is_not_sep = True
             tokens.extend(parsed.tokens)
             pos = parsed.position
+            if pos == len(target):
+                break
 
             parsed = sep.exec(target, pos)
             children.append(parsed)
@@ -283,8 +284,7 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
                        f" expecting {parser.expression} (by {parser.parser_type})")
                 return Failure(msg, pos, children=results, name=name)
                 # break
-            if parsed.success:
-                last_is_not_sep = False
+            last_is_not_sep = False
             pos = parsed.position
 
         if last_is_not_sep:
@@ -292,12 +292,6 @@ def end_by(parser: Parser, sep: Parser) -> Parser:
                    f" unexpected {target[position:position + 5]}"
                    f" expecting {parser.expression} (by {parser.parser_type})")
             return Failure(msg, pos, children=results, name=name)
-
-        # if pos != len(target):
-        #     msg = (f"parse error at ({position}):"
-        #            f" unexpected {target[position:position + 5]}"
-        #            f" expecting {parser.expression} (by {parser.parser_type})")
-        #     return Failure(msg, pos)
 
         return Success(tokens, pos, children=results, name=name)
 

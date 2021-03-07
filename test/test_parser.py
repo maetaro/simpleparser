@@ -1,13 +1,7 @@
 """test."""
 
+import pytest
 from simpleparser import token, regex, Parser, ParseResult
-
-
-def test_1() -> None:
-    """test_1."""
-    a: int = 1
-    b: int = 1
-    assert a == b
 
 
 def test_token_1() -> None:
@@ -36,6 +30,7 @@ def test_regex_1() -> None:
     assert f.exec("123").tokens == ["123"]
 
 
+@pytest.mark.timeout(5)
 def test_none_of_1() -> None:
     """test_none_of_1."""
     from simpleparser import none_of, choice, token, many, transform
@@ -43,3 +38,13 @@ def test_none_of_1() -> None:
     p = transform(many(quotedChar), lambda x: ["".join(x)])
     text = r'Shirt with ""Haskell"" text"'
     assert p.exec(text).tokens == ['Shirt with ""Haskell"" text']
+
+@pytest.mark.timeout(5)
+def test_many_1() -> None:
+    """test_many_1."""
+    from simpleparser import many, token
+    p = many(token("foo"))
+    assert p.exec('foo').tokens == ['foo']
+    assert p.exec('foofoo').tokens == ['foo', 'foo']
+    assert p.exec('bar').message == "parse error at (0): unexpected bar expecting foo (by token)"
+    assert p.exec('foobar').tokens == ['foo']

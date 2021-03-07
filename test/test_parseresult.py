@@ -1,7 +1,6 @@
 """test of ParseResult."""
 
-from simpleparser.parseresult import ParseResult
-from simpleparser import token, Parser, Failure, Success
+from simpleparser import token, Parser, ParseResult
 
 
 def test_then_1() -> None:

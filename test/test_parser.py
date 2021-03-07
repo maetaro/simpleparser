@@ -39,6 +39,7 @@ def test_none_of_1() -> None:
     text = r'Shirt with ""Haskell"" text"'
     assert p.exec(text).tokens == ['Shirt with ""Haskell"" text']
 
+
 @pytest.mark.timeout(5)
 def test_many_1() -> None:
     """test_many_1."""

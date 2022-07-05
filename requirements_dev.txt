@@ -53,6 +53,6 @@ sphinxjp.themes.basicstrap==0.5.0
 toml==0.10.2
 typed-ast==1.4.1
 typing-extensions==3.7.4.3
-ujson==1.35
+ujson==5.4.0
 urllib3==1.26.5
 watchdog==1.0.2
